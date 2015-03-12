@@ -1,0 +1,11 @@
+/__init__.pyc
+/_padlib_bezier.pyc
+/_padlib_linepattern.pyc
+/_padlib_polygon.pyc
+/_padlib_rrect.pyc
+/_padlib_spline.pyc
+/draw.pyc
+/math_helpers.pyc
+/occluder.pyc
+/particles.pyc
+/shadow.pyc

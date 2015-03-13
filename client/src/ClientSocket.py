@@ -22,6 +22,44 @@ class ClientSocket :
         master = data['master']
         self.createMaster (master)
         
+        #eventos
+        self.attack_event = False
+        self.move_event = None
+    
+    def resetEvents(self):
+        self.attack_event = False
+        self.move_event = None
+    
+    def buildEventPackage(self):
+        data = {"move": self.move_event, "attack": self.attack_event}
+      
+        data = json.dumps(data)
+        self.resetEvents()
+        return data
+    
+    def setAttack (self):
+        self.attack_event = True
+    
+    
+    def setMovementEvent (self, arrow):
+       
+        if arrow == [0, -1]:
+            self.move_event = 'u'
+        elif arrow == [0, 1]:
+            self.move_event = 'd'
+        elif arrow == [-1, 0]:
+            self.move_event = 'l'
+        elif arrow == [1, 0]:
+            self.move_event = 'r'
+        elif arrow == [-1, -1]:
+            self.move_event = 'ul'
+        elif arrow == [1, -1]:
+            self.move_event = 'ur'
+        elif arrow == [-1, 1]:
+            self.move_event = 'dl'
+        elif arrow == [1, 1]:
+            self.move_event = 'dr'
+    
     def addBots(self, bots):
         
         for bot in bots:
@@ -37,9 +75,8 @@ class ClientSocket :
     
     def updateGame(self):
         
-        data = {"movement" : self.master.getPosition()}
-        data = json.dumps(data)
-        self.conn.sendall (data)
+        self.conn.sendall (self.buildEventPackage())
+        
         data = self.conn.recv(self.size)
         data = json.loads(data)
         self.updateEvents (data['events'])
@@ -49,10 +86,9 @@ class ClientSocket :
         for m in moves:
             id, x, y = m[0], m[1], m[2]
             p = Person.Person.getPersonById(id)
-
-            if ((x, y) == p.getPosition()):
-                if (p != self.master):
-                    p.stopped();
+            
+            if p.getPosition() == (x, y):
+                p.stopped()
             else:
                 p.doAMovement((x, y))
             

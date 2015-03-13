@@ -1,7 +1,6 @@
 
 
 import Character
-import Walls
 import PathFind
 
 class Person:
@@ -18,11 +17,9 @@ class Person:
         
         p.setId(id)
 
-        if (Walls.Walls.pushPerson(x, y, p)):
-            Person.person_list.append(p)
-            return p
+        Person.person_list.append(p)
+        return p
 
-        return None
     
     @staticmethod
     def getNewBot(x, y, image = '../characters/img/blond_man.png', id = len(person_list)):
@@ -32,12 +29,11 @@ class Person:
         p = Character.Bot((x, y), image)
         
         p.setId(id)
-        if (Walls.Walls.pushPerson(x, y, p)):
-            Person.person_list.append(p)
 
-            return p
+        Person.person_list.append(p)
 
-        return None
+        return p
+
     
     @staticmethod
     def getPersonById(p_id):
@@ -47,18 +43,7 @@ class Person:
                 return p
     
         return None
-    
-    @staticmethod
-    def getPersonByPosition (x, y):
-        if (not Walls.Walls.isTherePerson(x, y)):
-            return None;
-        
-        return Person.getPersonById(Walls.Walls.getIdPosition(x, y))
-    
-    @staticmethod
-    def changePersonLocation (p, x, y):
-        return Walls.Walls.changePersonLocation(p, x, y)
-    
+
     @staticmethod
     def cmp ((x1, y1), (x2, y2)):
     
@@ -95,60 +80,4 @@ class Person:
     def setDead(person):
         # Walls.Walls.setDead(person.getPosition())
         Person.person_list.remove(person)
-    
-    @staticmethod
-    def freeLocation(person):
-        Walls.Walls.setDead(person.getPosition())
-        
-        
-    @staticmethod
-    def canHelpHim (person_a, person_b):
-        
-        xa, ya = person_a.getPosition()
-        xb, yb = person_b.getPosition()
-        
-        dist = PathFind.PathFind.euclidianDistance( (xa, ya), (xb, yb) )
-        
-        if (dist > 100): return False
-        
-        side = person_b.side
-        
-        x = xa - xb
-        y = ya - yb
-        
-        
-        if (x > 0 and y > 0 and side not in ('down', 'right')):
-            return False
-
-        if (x == 0 and y > 0 and side not in ('down')):
-            return False
-        
-        if (x < 0 and y > 0 and side not in ('down', 'left')):
-            return False
-        
-        if (x > 0 and y == 0 and side not in ('right')):
-            return False
-        
-        if (x < 0 and y == 0 and side not in ('left')):
-            return False
-        
-        if (x > 0 and y < 0 and side not in ('right', 'top')):
-            return False
-        
-        if (x == 0 and y < 0 and side not in ('top')):
-            return False
-        
-        if (x < 0 and y < 0 and side not in ('up', 'left')):
-            return False
-
-        return True
-    
-    
-    @staticmethod
-    def giveMeHelp (bot):
-        
-        for p in Person.person_list:
-            if (isinstance(p, Character.Bot)): 
-                if (Person.canHelpHim (bot, p)):
-                    p.setEnemy(bot.getEnemy());
     

@@ -90,59 +90,48 @@ class ClientThread(threading.Thread):
         while True:
             self.clock.tick(30)
             data = self.conn.recv(1024)
-            data = json.loads(data)
-            self.master.doAMovement(data['movement'])
-            data = {"moves": Client.getPackage(), "events": self.getEvents()}
+            
+            self.doClientEvents(data)
+            
+            data = {"moves": Client.getPackage(), "events": self.getServerEvents()}
             data_string = json.dumps(data)
             self.conn.sendall(data_string)
             
-            
-    def getEvents(self):
+    def doClientEvents(self, data):
+        data = json.loads(data)
+        
+        attack_event = data['attack']
+        move_event = data['move']
+        
+        self.doClientMovement (move_event)
+        
+    def doClientMovement(self, move_event):
+        
+            if move_event == 'u':
+                self.master.up()
+            elif move_event == 'd':
+                self.master.down()
+            elif move_event == 'l':
+                self.master.left()
+            elif move_event == 'r':
+                self.master.right()
+            elif move_event == 'ul':
+                self.master.upLeft()
+            elif move_event == 'ur':
+                self.master.upRight()
+            elif move_event == 'dl':
+                self.master.downLeft()
+            elif move_event == 'dr':
+                self.master.downRight()
+    
+    def doClienAttack(self, attack_event):
+        if attack_event != None:
+            self.master
+    
+    def getServerEvents(self):
         new_last = len(Client.events)
         events = Client.events[self.last_event:new_last]
         self.last_event = new_last
         return events
     
-        
-"""
-class Client:
     
-
-    def clientthread(conn):
-
-
-        conn.send('Welcome to the server. Type something and hit enter\n') #send only takes string
-    
-        return
-        while True:
-    
-    #Receiving from client
-    
-            data = conn.recv(1024)
-            data = json.loads(data)
-            if data['movement'] != 'none':
-                Clients.putMove(data['movement'])
-                continue
-                #print data['movement']
-            #print data['movement']from thread import *
-            #if not data: 
-            #    break
-    
-    
-            #x = int(raw_input())
-            #y = int(raw_input())
-            
-            data = { "moves": Clients.getMoves(id) }
-            print '1:', data
-            data_string = json.dumps(data)
-            print '2:', data_string
-            conn.sendall(data_string)
-            
-            Clients.clear(id)
-            
-            #came out of loop
-        conn.close()
-    
-            #now keep talking with the client
-            
-            """

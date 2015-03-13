@@ -53,6 +53,7 @@ class Game:
         
         while True:
             self.clock.tick(30)
+            self.client.updateGame()
             
             if self.p.life != 0:
             
@@ -86,8 +87,8 @@ class Game:
                     x1, y1 = self.path_deque.popleft()
                     self.p.doAMovement((x1, y1))
                 else:
-                    #self.p.move(self.arrow)
-                    self.client.setMovementEvent(self.arrow)
+                    self.p.move(self.arrow)
+                
             else: # if player died...
                 if died == False:
                     self.txt.updateReaderMessage(self.p.name + ' died!')
@@ -98,8 +99,29 @@ class Game:
                     self.sound.stopAll()
                     return 'DIED'
 
-                
-            self.client.updateGame()
+            
+            '''client_event = self.client.get()
+            
+            for e in pygame.event.get():
+                if e.type == KEYDOWN:
+                    if e.key == K_LEFT:
+                        self.client.sendMovement("left")
+                    if e.key == K_RIGHT:
+                        self.client.sendMovement("right")
+                    if e.key == K_DOWN:
+                        self.client.sendMovement("down")
+                    if e.key == K_UP:
+                        self.client.sendMovement("up")
+
+            for e in client_event['moves']:
+                if e == 'up':
+                    self.p.up()
+                if e == 'down':
+                    self.p.down()
+                if e == 'left':
+                    self.p.left()
+                if e == 'right':
+                    self.p.right()'''
                 
     def doEvent(self):
         
@@ -162,7 +184,7 @@ class Game:
                     
                     if e.key in self.p.attack_keys.keys():
                         self.p.attack(e.key)
-                        
+                    
                     if e.key == K_LSHIFT:
                         self.p.updateSpeed(True)
         

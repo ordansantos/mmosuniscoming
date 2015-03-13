@@ -10,28 +10,28 @@ class Person:
     person_list = []
     
     @staticmethod
-    def getNewPlayer(x, y, image = '../characters/sprites/ordan.png'):
+    def getNewPlayer(x, y, image = '../characters/sprites/ordan.png', id = len(person_list)):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
         p = Character.Player((x, y), image)
         
-        p.setId(len(Person.person_list))
+        p.setId(id)
+
         if (Walls.Walls.pushPerson(x, y, p)):
             Person.person_list.append(p)
-
             return p
 
         return None
     
     @staticmethod
-    def getNewBot(x, y, image = '../characters/img/blond_man.png'):
+    def getNewBot(x, y, image = '../characters/img/blond_man.png', id = len(person_list)):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
         p = Character.Bot((x, y), image)
         
-        p.setId(len(Person.person_list))
+        p.setId(id)
         if (Walls.Walls.pushPerson(x, y, p)):
             Person.person_list.append(p)
 
@@ -150,5 +150,5 @@ class Person:
         for p in Person.person_list:
             if (isinstance(p, Character.Bot)): 
                 if (Person.canHelpHim (bot, p)):
-                    p.setEnemy(bot.getEnemy);
+                    p.setEnemy(bot.getEnemy());
     

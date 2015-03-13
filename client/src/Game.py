@@ -15,6 +15,8 @@ class Game:
     
     def __init__(self, screen, width, height):
         
+        
+        
         self.mouse_pos_right_click = None
         
         self.width = width
@@ -37,39 +39,12 @@ class Game:
         
         self.sun = Sun.Sun()
         
-        self.p = Person.Person.getNewPlayer(150, 350, '../characters/sprites/ordan.png')
-        
-        Person.Person.setMaster(self.p.getId())
         self.path_deque = deque()
         
-        # Bot.BotController.putNewBot((1700, 1700), '../characters/skeleton.png')
-        Bot.BotController.putNewBot((160, 320))
-        Bot.BotController.putNewBot((165, 350))
-        #Bot.BotController.putNewBot((170, 370))
-        """Bot.BotController.putNewBot((200, 300))
-        Bot.BotController.putNewBot((100, 340))
-        Bot.BotController.putNewBot((250, 251))
-        Bot.BotController.putNewBot((130, 501))
-        Bot.BotController.putNewBot((166, 300))
-        Bot.BotController.putNewBot((131, 400))
-        Bot.BotController.putNewBot((122, 350))
-        Bot.BotController.putNewBot((203, 300))
-        Bot.BotController.putNewBot((104, 340))
-        Bot.BotController.putNewBot((255, 251))
-        Bot.BotController.putNewBot((138, 501))
-        Bot.BotController.putNewBot((169, 308))
-        Bot.BotController.putNewBot((139, 408))
-        Bot.BotController.putNewBot((129, 358))
-        Bot.BotController.putNewBot((209, 308))
-        Bot.BotController.putNewBot((109, 348))
-        Bot.BotController.putNewBot((259, 258))
-        Bot.BotController.putNewBot((139, 508))"""
-    
-        # Bot.BotController.putNewBot((600, 800))
-        # Bot.BotController.putNewBot((1000, 2000))
         
-        """ self.client = ClientSocket.ClientSocket() """
-    
+        self.client = ClientSocket.ClientSocket()
+        self.p = Person.Person.getMaster()
+
     def run(self):
         
         pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -78,8 +53,8 @@ class Game:
         died = False
         
         while True:
-            
-            self.clock.tick(60)
+            self.clock.tick(30)
+            self.client.updateGame()
             
             if self.p.life != 0:
             

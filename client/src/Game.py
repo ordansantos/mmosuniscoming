@@ -4,7 +4,6 @@ from pygame.locals import *
 import Screen
 import Person
 import Sun
-import Bot
 import Sound
 import ClientSocket
 import PathFind

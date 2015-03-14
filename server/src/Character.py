@@ -65,7 +65,8 @@ class Character:
 		return self.image
 	
 	def setEnemy(self, enemy):
-		self.enemy = enemy
+		if (not isinstance(enemy, Bot)):
+			self.enemy = enemy
 	
 	# movement handle
 	def doAMovement(self, (x1, y1)):
@@ -157,24 +158,7 @@ class Character:
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.attack_keys[key] = True
 			self.attack_key = key
-			if key == Character.SLASH:
-				self.slash()
-			elif key == Character.REBUKE:
-				self.rebuke()
-	
-	def updateAttack(self):
-		if self.attack_key != Character.NO_ATTACK and self.life != 0:
-			if self.side == 'up':  # up
-				self.picnr = [0, 0]
-			elif self.side == 'left':  # left
-				self.picnr = [1, 0]
-			elif self.side == 'down':  # down
-				self.picnr = [2, 0]
-			elif self.side == 'right':  # right
-				self.picnr = [3, 0]
-			self.attack_keys[self.attack_key] = False
-			self.lenPic = 9
-			self.interval = 100
+			self.hit()
 			self.attack_key = Character.NO_ATTACK
 	
 	def hit(self):
@@ -195,44 +179,13 @@ class Character:
 				for y in xrange(self.y - 8, self.y + 8):
 					self.checkAttack(x, y)
 	
+	# child overrides this
 	def checkAttack(self, x, y):
 		pass
 	
-	def slash(self):
-		if self.side == 'up':
-			self.picnr = [4, 0]
-		elif self.side == 'left':
-			self.picnr = [5, 0]
-		elif self.side == 'down':
-			self.picnr = [6, 0]
-		elif self.side == 'right':
-			self.picnr = [7, 0]
-		self.lenPic = 6
-		self.interval = 80
-		self.hit()
-	
-	def rebuke(self):
-		if self.side == 'up':
-			self.picnr = [8, 0]
-		elif self.side == 'left':
-			self.picnr = [9, 0]
-		elif self.side == 'down':
-			self.picnr = [10, 0]
-		elif self.side == 'right':
-			self.picnr = [11, 0]
-		self.lenPic = 7
-		self.interval = 150
-		self.hit()
-	
 	# life handle
-	def isDead(self):
+	def dead(self):
 		Person.Person.setDead(self)
-	
-	def dying(self):
-		Person.Person.freeLocation(self)
-		self.picnr = [12, 0]
-		self.lenPic = 6
-		self.interval = 500
 	
 	# speed handle
 	def updateSpeed(self, fast):
@@ -273,14 +226,12 @@ class Player(Character):
 				self.life -= self.stranger
 				if self.life < 0:
 					self.life = 0
-					self.dying()
 				self.death = time"""
 		if self.fast and not self.transformed:
 			if time - self.death >= (self.death_interval / 5):
 				self.life -= 1
 				if self.life < 0:
 					self.life = 0
-					self.dying()
 				self.death = time
 	
 	# movement handle
@@ -319,7 +270,6 @@ class Player(Character):
 					enemy.life -= self.stranger
 				if enemy.life <= 0:
 					enemy.life = 0
-					enemy.dying()
 					self.partial_killed += 1
 					self.all_killed += 1
 		
@@ -346,9 +296,8 @@ class Player(Character):
 		return None
 	
 	# life handle
-	def isDead(self):
+	def dead(self):
 		Person.Person.setDead(self)
-		self.death = -1
 
 
 class Bot(Character):
@@ -374,8 +323,6 @@ class Bot(Character):
 				if isinstance(enemy, Player) and not enemy.transformed:
 					enemy.attacked = True
 					enemy.life -= self.stranger
-					if enemy.life <= 0:
+					if enemy.life < 0:
 						enemy.life = 0
-						enemy.dying()
-	
 	

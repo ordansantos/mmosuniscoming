@@ -66,12 +66,6 @@ class Character:
 		self.x = x
 		self.y = y
 	
-	def getEnemy(self):
-		return self.enemy
-	
-	def setEnemy(self, enemy):
-		self.enemy = enemy
-		
 	# images handle
 	def readSprites(self, path):
 		# one full day to do this function
@@ -134,7 +128,7 @@ class Character:
 		if time < self.cycletime:
 			self.cycletime = 0
 		if (time - self.cycletime) >= self.interval:
-			self.cycletime = pygame.time.get_ticks()
+			self.cycletime = time
 			return True
 		return False
 	
@@ -238,8 +232,9 @@ class Character:
 			self.setPosition(position)
 	
 	def stopped(self):
-		self.movement = False
-		self.picnr[1] = 0
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
+			self.movement = False
+			self.picnr[1] = 0
 	
 	# attack handle
 	def attack(self, key):
@@ -380,27 +375,6 @@ class Player(Character):
 				self.stopped()
 	
 	# attack handle
-	def checkAttack(self, x, y):
-		if self.getPosition() != (x, y):
-			enemy = Person.Person.getPersonByPosition(x, y)
-			
-			if enemy != None:
-				enemy.setEnemy(self)
-				enemy.attacked = True
-				if self.transformed:
-					enemy.life = 0
-				else:
-					enemy.life -= self.stranger
-				if enemy.life <= 0:
-					enemy.life = 0
-					enemy.dying()
-					self.partial_killed += 1
-					self.all_killed += 1
-		
-				self.life += self.stranger
-				if self.life > 100:
-					self.life = 100
-	
 	def updateTransform(self):
 		time = pygame.time.get_ticks()
 		if self.partial_killed == self.number_transformation:
@@ -422,7 +396,7 @@ class Player(Character):
 	# life handle
 	def isDead(self):
 		Person.Person.setDead(self)
-		self.death = -1
+		# self.death = -1
 
 
 class Bot(Character):
@@ -439,17 +413,5 @@ class Bot(Character):
 	
 	def getMovementRange(self):
 		return self.movement_range
-	
-	def checkAttack(self, x, y):
-		if self.getPosition() != (x, y):
-			enemy = Person.Person.getPersonByPosition(x, y)
-			if enemy != None:
-				enemy.setEnemy(self)
-				if isinstance(enemy, Player) and not enemy.transformed:
-					enemy.attacked = True
-					enemy.life -= self.stranger
-					if enemy.life <= 0:
-						enemy.life = 0
-						enemy.dying()
 	
 	

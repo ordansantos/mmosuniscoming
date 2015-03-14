@@ -52,7 +52,8 @@ class BotThread(threading.Thread):
                     x1, y1 = self.p.getEnemy().getPosition()
                     if (not self.getPath((x1, y1))):
                         self.p.attack(pygame.K_SPACE)
-                        Person.Person.giveMeHelp(self.p)
+                        pygame.time.wait(500)
+                        #Person.Person.giveMeHelp(self.p)
                 else:
                     if (pygame.time.get_ticks() - self.last_tick > 5000):
                         self.getAnyPath()    
@@ -60,6 +61,8 @@ class BotThread(threading.Thread):
                         self.any_path = True
                     else:
                         self.p.stopped()
+        
+        self.p.dead()
     
     def moveBot(self):
         x1, y1 = self.path_deque.popleft()

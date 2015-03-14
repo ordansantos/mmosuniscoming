@@ -88,19 +88,21 @@ class Game:
                 else:
                     #self.p.move(self.arrow)
                     self.client.setMovementEvent(self.arrow)
+                    
             else: # if player died...
+                time = pygame.time.get_ticks()
                 if died == False:
+                    died_time = time
                     self.txt.updateReaderMessage(self.p.name + ' died!')
                     died = True
-                if self.p.death != -1:
+                if time - died_time < 1500:
                     self.frame.draw(self.p, self.sun)
                 else:
                     self.sound.stopAll()
                     return 'DIED'
-
-                
+            
             self.client.updateGame()
-                
+    
     def doEvent(self):
         
         # close game
@@ -161,8 +163,8 @@ class Game:
                         self.updateArrows()
                     
                     if e.key in self.p.attack_keys.keys():
-                        self.p.attack(e.key)
-                        
+                        #self.p.attack(e.key)
+                        self.client.setAttack(e.key)
                     if e.key == K_LSHIFT:
                         self.p.updateSpeed(True)
         

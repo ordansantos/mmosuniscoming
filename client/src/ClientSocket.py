@@ -3,6 +3,7 @@
 import socket
 import json
 import Person
+import Character
 
 class ClientSocket :
     
@@ -23,11 +24,11 @@ class ClientSocket :
         self.createMaster (master)
         
         #eventos
-        self.attack_event = False
+        self.attack_event = None
         self.move_event = None
     
     def resetEvents(self):
-        self.attack_event = False
+        self.attack_event = None
         self.move_event = None
     
     def buildEventPackage(self):
@@ -37,28 +38,28 @@ class ClientSocket :
         self.resetEvents()
         return data
     
-    def setAttack (self):
-        self.attack_event = True
-    
+    def setAttack (self, key):
+        if self.master.attack_key == Character.Character.NO_ATTACK:
+            self.attack_event = key
     
     def setMovementEvent (self, arrow):
-       
-        if arrow == [0, -1]:
-            self.move_event = 'u'
-        elif arrow == [0, 1]:
-            self.move_event = 'd'
-        elif arrow == [-1, 0]:
-            self.move_event = 'l'
-        elif arrow == [1, 0]:
-            self.move_event = 'r'
-        elif arrow == [-1, -1]:
-            self.move_event = 'ul'
-        elif arrow == [1, -1]:
-            self.move_event = 'ur'
-        elif arrow == [-1, 1]:
-            self.move_event = 'dl'
-        elif arrow == [1, 1]:
-            self.move_event = 'dr'
+        if self.master.attack_key == Character.Character.NO_ATTACK and self.master.life != 0:
+            if arrow == [0, -1]:
+                self.move_event = 'u'
+            elif arrow == [0, 1]:
+                self.move_event = 'd'
+            elif arrow == [-1, 0]:
+                self.move_event = 'l'
+            elif arrow == [1, 0]:
+                self.move_event = 'r'
+            elif arrow == [-1, -1]:
+                self.move_event = 'ul'
+            elif arrow == [1, -1]:
+                self.move_event = 'ur'
+            elif arrow == [-1, 1]:
+                self.move_event = 'dl'
+            elif arrow == [1, 1]:
+                self.move_event = 'dr'
     
     def addBots(self, bots):
         
@@ -81,12 +82,14 @@ class ClientSocket :
         data = json.loads(data)
         self.updateEvents (data['events'])
         self.updateBotsPositions(data['moves'])
-        
+        if data['events'] != []:
+            print data['events']
+    
     def updateBotsPositions(self, moves):
         for m in moves:
-            id, x, y = m[0], m[1], m[2]
+            id, x, y, life = m[0], m[1], m[2], m[3]
             p = Person.Person.getPersonById(id)
-            
+            p.life = life
             if p.getPosition() == (x, y):
                 p.stopped()
             else:
@@ -99,7 +102,8 @@ class ClientSocket :
             
             if (event == 'c'):
                 self.addBot(e[1])
-    
-                
+            if (event == 'a'):
+                p = Person.Person.getPersonById(e[1])
+                p.attack(e[2])
         
         

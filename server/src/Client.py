@@ -4,6 +4,7 @@ import json
 import Person
 import Walls
 import pygame
+
 from pygame.locals import *
 
 class Client:
@@ -43,7 +44,8 @@ class Client:
         for b in bots:
             x, y = b.getPosition()
             id = b.getId()
-            list_positions.append ((id, x, y))
+            life = b.life
+            list_positions.append ((id, x, y, life))
         
         return list_positions
     
@@ -104,6 +106,7 @@ class ClientThread(threading.Thread):
         move_event = data['move']
         
         self.doClientMovement (move_event)
+        self.doClienAttack (attack_event)
         
     def doClientMovement(self, move_event):
         
@@ -126,8 +129,9 @@ class ClientThread(threading.Thread):
     
     def doClienAttack(self, attack_event):
         if attack_event != None:
-            self.master
-    
+            self.master.attack(attack_event)
+            Client.events.append(('a', self.master.getId(), attack_event))
+            
     def getServerEvents(self):
         new_last = len(Client.events)
         events = Client.events[self.last_event:new_last]

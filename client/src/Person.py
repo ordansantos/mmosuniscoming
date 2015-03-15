@@ -9,7 +9,7 @@ class Person:
     person_list = []
     
     @staticmethod
-    def getNewPlayer(x, y, image = '../characters/sprites/ordan.png', id = len(person_list)):
+    def getNewPlayer(x, y, image, id):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
@@ -22,7 +22,9 @@ class Person:
 
     
     @staticmethod
-    def getNewBot(x, y, image = '../characters/img/blond_man.png', id = len(person_list)):
+    def getNewBot(x, y, image, id):
+        
+        
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
@@ -31,7 +33,7 @@ class Person:
         p.setId(id)
 
         Person.person_list.append(p)
-
+        p.stopped()
         return p
 
     
@@ -56,6 +58,7 @@ class Person:
     
     @staticmethod
     def getPersons():
+
         for i in xrange (1, len(Person.person_list)):
             j = i
             while (j > 0 and Person.cmp(Person.person_list[j].getPosition(), Person.person_list[j - 1].getPosition())):
@@ -80,6 +83,10 @@ class Person:
     def setDead(person):
         if person in Person.person_list:
             Person.person_list.remove(person)
+            
     
+    @staticmethod
+    def reset ():
+        Person.person_list = []
 
     

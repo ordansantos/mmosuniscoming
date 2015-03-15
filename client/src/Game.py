@@ -70,9 +70,12 @@ class Game:
                 
                 if switch == 'ESCAPE':
                     self.sound.stopAll()
+                    self.client.close = True
+                    
                     return 'ESCAPE'
                 elif switch == 'QUIT':
                     self.sound.stopAll()
+                    self.client.close = True
                     return 'QUIT'
                 
                 # update title
@@ -82,6 +85,8 @@ class Game:
                 self.frame.draw(self.p, self.sun)
                 
                 # update player
+                #print self.p.id
+                
                 self.p.updateDeath(self.sun.getPeriod())
                 transform = self.p.updateTransform()
                 
@@ -91,7 +96,7 @@ class Game:
                 # move player
                 if (len(self.path_deque)):
                     x1, y1 = self.path_deque.popleft()
-                    self.p.doAMovement((x1, y1))
+                    self.p.putMove((x1, y1))
                 else:
                     #self.p.move(self.arrow)
                     self.client.setMovementEvent(self.arrow)
@@ -106,6 +111,7 @@ class Game:
                     self.frame.draw(self.p, self.sun)
                 else:
                     self.sound.stopAll()
+                    
                     return 'DIED'
     
     

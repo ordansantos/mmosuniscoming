@@ -26,7 +26,7 @@ class Client:
         bots = Person.Person.getPersons()
         
         for b in bots:
-            if b != master:
+            if b != master and b.life != 0:
                 x, y = b.getPosition()
                 image = b.getImage()
                 
@@ -42,6 +42,7 @@ class Client:
         bots = Person.Person.getPersons()
         
         for b in bots:
+            if (b.life == 0): continue
             x, y = b.getPosition()
             id = b.getId()
             life = b.life
@@ -78,25 +79,43 @@ class ClientThread(threading.Thread):
         
         #enviando personagens criados e o id do master
         master_tuple = Client.getNewPlayer()
+
         self.master = Person.Person.getPersonById(master_tuple[0])
+
+        try:
         
-        data = {"bots": Client.getBots(self.master), "master": master_tuple}
-        
-        self.last_event = len(Client.events)
-        
-        data_string = json.dumps(data)
-        self.conn.sendall (data_string)
-        
-        while True:
-            self.error = False
+            data = {"bots": Client.getBots(self.master), "master": master_tuple}
             
-            data = self.conn.recv(1024)
+            self.last_event = len(Client.events)
             
-            self.doClientEvents(data)
-            
-            data = {"moves": Client.getPackage(), "events": self.getServerEvents(), "error": self.error}
             data_string = json.dumps(data)
-            self.conn.sendall(data_string)
+            self.conn.sendall (data_string)
+            
+            while True:
+                self.error = False
+                
+                data = self.conn.recv(1024)
+                
+                self.doClientEvents(data)
+                
+                if (self.master.life == 0):
+                    Client.events.append(('d', self.master.getId()))
+                
+                data = {"moves": Client.getPackage(), "events": self.getServerEvents(), "error": self.error}
+                
+                data_string = json.dumps(data)
+                self.conn.sendall(data_string)
+                
+                if (self.master.life == 0):
+                    self.conn.close()
+                    self.master.dead()
+                    print 'fim da conexao com o cliente'
+                    break
+        except Exception, e:
+            print "Exception wile receiving message: ", e
+            self.conn.close()
+            self.master.dead()
+            Client.events.append(('d', self.master.getId()))
             
     def doClientEvents(self, data):
         data = json.loads(data)

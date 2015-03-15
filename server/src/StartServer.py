@@ -13,9 +13,10 @@ tile_map = load_pygame('tile_map.tmx')
 Walls.Walls.pushWalls(tile_map) 
 
 #Criando bots
+
 Bot.BotController.putNewBot ((160, 350), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((170, 350), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((180, 350), '../characters/sprites/blond_man.png')
+#Bot.BotController.putNewBot ((170, 350), '../characters/sprites/black_man.png')
+#Bot.BotController.putNewBot ((180, 350), '../characters/sprites/blond_man.png')
 
 server = Server.Server()
 

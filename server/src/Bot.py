@@ -4,6 +4,8 @@ from collections import deque
 import pygame
 import threading
 import PathFind
+import Client
+import time
 
 import random
 import Walls
@@ -28,8 +30,11 @@ class BotThread(threading.Thread):
         self.path_deque = deque()
         self.clock = pygame.time.Clock()
         self.any_path = False
+        self.last_moved = int(round(time.time() * 1000))
         
-        while self.p.life != 0:
+        while True:
+            
+            self.waitRevive()
             
             self.clock.tick(30)
             
@@ -48,22 +53,48 @@ class BotThread(threading.Thread):
                 
                 
                 if (self.p.getEnemy() != None):
-
+                    if (self.p.getEnemy().life == 0):
+                        self.p.setEnemy(None)
+                        continue
                     x1, y1 = self.p.getEnemy().getPosition()
                     if (not self.getPath((x1, y1))):
+                        Client.Client.events.append(('a', self.p.getId(), 32))
+                        self.waitRevive()
                         self.p.attack(pygame.K_SPACE)
                         pygame.time.wait(500)
                         #Person.Person.giveMeHelp(self.p)
                 else:
-                    if (pygame.time.get_ticks() - self.last_tick > 5000):
+                    time_rand = random.randint(3000, 10000)
+                    atual = int(round(time.time() * 1000))
+                    
+                    if (atual - self.last_moved > time_rand):
                         self.getAnyPath()    
                         self.last_tick = pygame.time.get_ticks()
                         self.any_path = True
+                        self.last_moved = int(round(time.time() * 1000))
                     else:
                         self.p.stopped()
-        
-        self.p.dead()
+
     
+    def waitRevive(self):
+        
+        if (self.p.life == 0):
+            Client.Client.events.append(('d', self.p.getId()))
+            
+            millis = int(round(time.time() * 1000))
+            
+            while True:
+                now = int(round(time.time() * 1000))
+                
+                if (now - millis > 1000 * 10):
+                    self.p.life = 100 
+                    x, y = self.p.getPosition()
+                    id = self.p.getId()
+                    life = self.p.life
+                    image = self.p.image
+                    Client.Client.events.append(('c', (id, x, y, image)))
+                    self.p.setEnemy(None)
+                    return
     def moveBot(self):
         x1, y1 = self.path_deque.popleft()
         self.p.doAMovement((x1, y1))

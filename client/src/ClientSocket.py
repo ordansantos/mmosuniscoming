@@ -36,7 +36,7 @@ class ClientSocket:
         self.attack_event = None
         self.q_moves = Queue.Queue()
         
-        
+        self.close = False
         
     def resetEvents(self):
         self.attack_event = None
@@ -123,6 +123,7 @@ class ClientSocket:
         for m in moves:
             id, x, y, life = m[0], m[1], m[2], m[3]
             p = Person.Person.getPersonById(id)
+            if p == None: continue
             p.life = life
             #if life == 0:
             #    p.dying()
@@ -130,7 +131,8 @@ class ClientSocket:
                 p.stopTime()
             else:
                 if (p != self.master):
-                    p.doAMovement((x, y))
+                    p.putMove((x, y))
+                    #print p.getPosition(), x, y
                 else:
                     self.last_x = x;
                     self.last_y = y
@@ -146,16 +148,23 @@ class ClientSocket:
                 p = Person.Person.getPersonById(e[1])
                 if (p != self.master):
                     p.attack(e[2])
-
+            if (event == 'd'):
+                p = Person.Person.getPersonById(e[1])
+                if (p == Person.Person.getMaster()):
+                    self.close = True
+                p.life = 0
+                p.dying()
+                
 class ClientConnection(threading.Thread):
     
     def run(self):
-        
+
         self.client = self._Thread__kwargs['client']
         while (True):
-            self.client.updateGame()
-    
-    
-        
 
+            self.client.updateGame()
+            if self.client.close:
+                self.client.conn.close()
+                break
+    
     

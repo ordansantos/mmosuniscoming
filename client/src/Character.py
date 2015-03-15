@@ -6,6 +6,7 @@ import Sound
 import math
 import time
 import Walls
+import Queue
 
 class Character:
 	
@@ -47,9 +48,13 @@ class Character:
 		self.attacked = False
 		self.enemy = None
 		self.stop_time = int(round(time.time() * 1000))
+		self.queue_moves = Queue.Queue()
+		self.last_x = x
+		self.last_y = y
 	# utilities for the id
 	def setId(self, p_id):
 		self.id = p_id
+
 	
 	def getId(self):
 		return self.id
@@ -72,6 +77,7 @@ class Character:
 		self.clearStopTime()
 		self.x = x
 		self.y = y
+		
 		return True
 	
 	# images handle
@@ -107,6 +113,8 @@ class Character:
 		return sprites
 	
 	def getImage(self):
+		self.doAMovement()
+		
 		x, y = self.picnr
 		if self.movement or self.attack_key != Character.NO_ATTACK or self.life == 0:
 			self.updatePicnr()
@@ -158,13 +166,12 @@ class Character:
 		return None
 	
 	# movement handle
-	def doAMovement(self, (x1, y1)):
+	def doAMovement(self):
 		x, y = self.getPosition()
-		"""delay = 1
-		if (math.fabs(x1 - x) > delay or math.fabs(y1 - y) > delay ):
-			self.toPosition(x1, y1)
-			return"""
-		
+		x1, y1 = self.getMove()
+		#if ((x1, y1) != (x, y) and self != Person.Person.getMaster()):
+		#	print self.id, x1, y1
+			
 		if (x1 > x):
 			if (y1 > y):
 				self.downRight()
@@ -186,6 +193,22 @@ class Character:
 				self.down()
 			elif (y1 < y):
 				self.up()
+	
+	def putMove (self, (x1, y1)):
+		if (self.last_x, self.last_y) == (x1, y1) and self.queue_moves.empty():
+			#print 'igual e vazia'
+			pass
+		if ((self.last_x, self.last_y) != (x1, y1)):
+			self.queue_moves.put((x1, y1))
+			self.last_x = x1
+			self.last_y = y1
+	
+	def getMove (self):
+		
+		
+		if (self.queue_moves.empty()):
+			return self.getPosition()
+		return self.queue_moves.get()
 	
 	def up(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
@@ -307,7 +330,6 @@ class Character:
 	
 	def dying(self):
 		Sound.Sound.deathPlay()
-		Person.Person.freeLocation(self)
 		self.picnr = [12, 0]
 		self.lenPic = 6
 		self.interval = 500
@@ -323,7 +345,7 @@ class Character:
 			
 	def stopTime(self):
 		millis = int(round(time.time() * 1000))
-		if ((millis - self.stop_time) > 400):
+		if ((millis - self.stop_time) > 200):
 			self.stopped()
 			self.stop_time = millis
 			

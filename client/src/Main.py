@@ -32,7 +32,7 @@ while True:
         if switch == 'QUIT':
             pygame.quit()
             break
-    
+        Person.Person.reset()
     elif op == 1:
         switch = menu.options()
         if switch == 'QUIT':

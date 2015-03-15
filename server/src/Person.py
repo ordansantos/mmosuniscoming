@@ -8,6 +8,12 @@ class Person:
     
     CONST_MAX_WH = 7200
     person_list = []
+    id_global = 0
+    
+    @staticmethod
+    def getIdGlobal():
+        Person.id_global += 1
+        return Person.id_global - 1
     
     @staticmethod
     def getNewPlayer(x, y, image = '../characters/sprites/ordan.png'):
@@ -16,7 +22,8 @@ class Person:
         
         p = Character.Player((x, y), image)
         
-        p.setId(len(Person.person_list))
+        p.setId(Person.getIdGlobal())
+        
         if (Walls.Walls.pushPerson(x, y, p)):
             Person.person_list.append(p)
 
@@ -31,7 +38,7 @@ class Person:
         
         p = Character.Bot((x, y), image)
         
-        p.setId(len(Person.person_list))
+        p.setId(Person.getIdGlobal())
         if (Walls.Walls.pushPerson(x, y, p)):
             Person.person_list.append(p)
 
@@ -93,13 +100,9 @@ class Person:
 
     @staticmethod
     def setDead(person):
+        print 'matou: ', person.id
         if person in Person.person_list:
             Person.person_list.remove(person)
-    
-    @staticmethod
-    def freeLocation(person):
-        Walls.Walls.setDead(person.getPosition())
-        
         
     @staticmethod
     def canHelpHim (person_a, person_b):

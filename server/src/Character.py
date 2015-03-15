@@ -282,7 +282,7 @@ class Player(Character):
 				self.life += self.stranger
 				if self.life > 100:
 					self.life = 100
-	
+					
 	def updateTransform(self):
 		time = pygame.time.get_ticks()
 		if self.partial_killed == self.number_transformation:

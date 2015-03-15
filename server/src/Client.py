@@ -93,7 +93,7 @@ class ClientThread(threading.Thread):
             
             while True:
                 self.error = False
-                
+                print self.master.life
                 data = self.conn.recv(1024)
                 
                 self.doClientEvents(data)
@@ -106,11 +106,14 @@ class ClientThread(threading.Thread):
                 data_string = json.dumps(data)
                 self.conn.sendall(data_string)
                 
-                if (self.master.life == 0):
+                """if (self.master.life == 0):
+                    data = self.conn.recv(1024)
+                    data = {"moves": Client.getPackage(), "events": self.getServerEvents(), "error": self.error}
+                    self.conn.sendall(data_string)
                     self.conn.close()
                     self.master.dead()
                     print 'fim da conexao com o cliente'
-                    break
+                    break """
         except Exception, e:
             print "Exception wile receiving message: ", e
             self.conn.close()

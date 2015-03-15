@@ -93,8 +93,8 @@ class Person:
 
     @staticmethod
     def setDead(person):
-        # Walls.Walls.setDead(person.getPosition())
-        Person.person_list.remove(person)
+        if person in Person.person_list:
+            Person.person_list.remove(person)
     
     @staticmethod
     def freeLocation(person):

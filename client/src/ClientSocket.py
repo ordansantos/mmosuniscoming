@@ -90,6 +90,8 @@ class ClientSocket :
             id, x, y, life = m[0], m[1], m[2], m[3]
             p = Person.Person.getPersonById(id)
             p.life = life
+            if life == 0:
+                p.dying()
             if p.getPosition() == (x, y):
                 p.stopped()
             else:

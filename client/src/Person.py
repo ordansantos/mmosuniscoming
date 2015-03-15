@@ -81,10 +81,5 @@ class Person:
         if person in Person.person_list:
             Person.person_list.remove(person)
     
-    @staticmethod
-    def restartPerson():
-        for p in Person.person_list:
-            Walls.Walls.freeLocation(p.getPosition())
-            p.life = 0
-        Person.person_list = []
+
     

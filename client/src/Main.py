@@ -26,7 +26,6 @@ while True:
     op = menu.selectMenu()
     
     if op == 0:
-        Person.Person.restartPerson()
         menu.loading()
         game = Game.Game(screen, width[0], height[0])
         switch = game.run()

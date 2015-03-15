@@ -4,12 +4,16 @@ import socket
 import json
 import Person
 import Character
+import threading
+import pygame
+class ClientSocket:
+    
 
-class ClientSocket :
+
     
     def __init__(self):
         
-        self.host = '186.212.224.86'
+        self.host = 'localhost'
         self.port = 8888
         self.size = 1024
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,10 +27,9 @@ class ClientSocket :
         master = data['master']
         self.createMaster (master)
         
-        #eventos
         self.attack_event = None
         self.move_event = None
-    
+        self.loop = 0
     def resetEvents(self):
         self.attack_event = None
         self.move_event = None
@@ -38,6 +41,7 @@ class ClientSocket :
         self.resetEvents()
         return data
     
+
     def setAttack (self, key):
         if self.master.attack_key == Character.Character.NO_ATTACK:
             self.attack_event = key
@@ -75,23 +79,22 @@ class ClientSocket :
         
     
     def updateGame(self):
-        
+
         self.conn.sendall (self.buildEventPackage())
         
         data = self.conn.recv(self.size)
         data = json.loads(data)
         self.updateEvents (data['events'])
         self.updateBotsPositions(data['moves'])
-        if data['events'] != []:
-            print data['events']
+        
     
     def updateBotsPositions(self, moves):
         for m in moves:
             id, x, y, life = m[0], m[1], m[2], m[3]
             p = Person.Person.getPersonById(id)
             p.life = life
-            if life == 0:
-                p.dying()
+            #if life == 0:
+            #    p.dying()
             if p.getPosition() == (x, y):
                 p.stopped()
             else:
@@ -107,5 +110,18 @@ class ClientSocket :
             if (event == 'a'):
                 p = Person.Person.getPersonById(e[1])
                 p.attack(e[2])
+
+class ClientConnection(threading.Thread):
+    
+    def run(self):
         
+        self.client = self._Thread__kwargs['client']
+        self.clock = pygame.time.Clock()
+        while (True):
+            self.clock.tick(20)
+            self.client.updateGame()
+    
+    
         
+
+    

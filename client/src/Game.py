@@ -40,11 +40,18 @@ class Game:
         
         self.path_deque = deque()
         
-        
         self.client = ClientSocket.ClientSocket()
+        
+        thread_client = ClientSocket.ClientConnection(kwargs={'client': self.client})
+        thread_client.setDaemon(True)
+        thread_client.start()
+
+        
         self.p = Person.Person.getMaster()
 
     def run(self):
+        
+        
         
         pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         
@@ -100,8 +107,7 @@ class Game:
                 else:
                     self.sound.stopAll()
                     return 'DIED'
-            
-            self.client.updateGame()
+    
     
     def doEvent(self):
         

@@ -1,6 +1,5 @@
 
 import Queue
-import Walls
 import math
 import pygame
 from collections import deque

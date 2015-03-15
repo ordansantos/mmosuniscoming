@@ -5,7 +5,6 @@ import pygame
 from pygame.locals import *
 import pytmx
 from pytmx.util_pygame import load_pygame
-import Walls
 import Person
 import TextBox
 import math

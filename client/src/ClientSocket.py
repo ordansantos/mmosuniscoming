@@ -125,6 +125,8 @@ class ClientSocket:
             p = Person.Person.getPersonById(id)
             if p == None: continue
             p.life = life
+            
+            print life
             #if life == 0:
             #    p.dying()
             if p.getPosition() == (x, y):

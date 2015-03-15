@@ -103,6 +103,9 @@ class Game:
                     
             else: # if player died...
                 time = pygame.time.get_ticks()
+                
+                self.client.close = True
+                
                 if died == False:
                     died_time = time
                     self.txt.updateReaderMessage(self.p.name + ' died!')

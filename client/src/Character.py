@@ -3,6 +3,9 @@ import pygame
 
 import Person
 import Sound
+import math
+import time
+import Walls
 
 class Character:
 	
@@ -43,7 +46,7 @@ class Character:
 		self.attack_key = Character.NO_ATTACK
 		self.attacked = False
 		self.enemy = None
-		
+		self.stop_time = int(round(time.time() * 1000))
 	# utilities for the id
 	def setId(self, p_id):
 		self.id = p_id
@@ -63,8 +66,12 @@ class Character:
 		return self.initial_position
 	
 	def setPosition(self, (x, y)):
+		if (Walls.Walls.isThereWall((x, y))):
+			return False
+		
 		self.x = x
 		self.y = y
+		return True
 	
 	# images handle
 	def readSprites(self, path):
@@ -152,7 +159,11 @@ class Character:
 	# movement handle
 	def doAMovement(self, (x1, y1)):
 		x, y = self.getPosition()
-
+		"""delay = 5
+		if (math.fabs(x1 - x) > 5 or math.fabs(y1 - y) > 5 ):
+			self.toPosition(x1, y1)
+			return"""
+		
 		if (x1 > x):
 			if (y1 > y):
 				self.downRight()
@@ -180,56 +191,56 @@ class Character:
 			self.side = 'up'
 			self.movement = True
 			position =  (self.x, self.y - self.px);
-			self.setPosition(position)
+			return self.setPosition(position)
 			
 	def left(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'left'
 			self.movement = True
 			position = (self.x - self.px, self.y)
-			self.setPosition(position)
+			return self.setPosition(position)
 	
 	def down(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'down'
 			self.movement = True
 			position = (self.x, self.y + self.px);
-			self.setPosition(position)
+			return self.setPosition(position)
 	
 	def right(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'right'
 			self.movement = True
 			position = (self.x + self.px , self.y);
-			self.setPosition(position)
+			return self.setPosition(position)
 	
 	def upLeft(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'left'
 			self.movement = True
 			position = (self.x - self.px, self.y - self.px);
-			self.setPosition(position)
+			return self.setPosition(position)
 	
 	def upRight(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'right'
 			self.movement = True
 			position = (self.x + self.px, self.y - self.px);
-			self.setPosition(position)
+			return self.setPosition(position)
 	
 	def downLeft(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'left'
 			self.movement = True
 			position = (self.x - self.px, self.y + self.px);
-			self.setPosition(position)
+			return self.setPosition(position)
 	
 	def downRight(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'right'
 			self.movement = True
 			position = (self.x + self.px, self.y + self.px);
-			self.setPosition(position)
+			return self.setPosition(position)
 	
 	def stopped(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
@@ -308,8 +319,13 @@ class Character:
 		else:
 			self.fast = False
 			self.px = 1
-
-
+			
+	def stopTime(self):
+		millis = int(round(time.time() * 1000))
+		if ((millis - self.stop_time) > 400):
+			self.stopped()
+			self.stop_time = millis
+		
 class Player(Character):
 	
 	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_vamp.png'):
@@ -413,5 +429,8 @@ class Bot(Character):
 	
 	def getMovementRange(self):
 		return self.movement_range
+	
+	
+	
 	
 	

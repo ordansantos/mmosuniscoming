@@ -74,8 +74,6 @@ class ClientThread(threading.Thread):
     def run(self):
         self.conn = self._Thread__kwargs['conn']
         
-        self.clock = pygame.time.Clock()
-        
         self.last_event = 0
         
         #enviando personagens criados e o id do master
@@ -90,12 +88,13 @@ class ClientThread(threading.Thread):
         self.conn.sendall (data_string)
         
         while True:
-            self.clock.tick(30)
+            self.error = False
+            
             data = self.conn.recv(1024)
             
             self.doClientEvents(data)
             
-            data = {"moves": Client.getPackage(), "events": self.getServerEvents()}
+            data = {"moves": Client.getPackage(), "events": self.getServerEvents(), "error": self.error}
             data_string = json.dumps(data)
             self.conn.sendall(data_string)
             
@@ -105,27 +104,39 @@ class ClientThread(threading.Thread):
         attack_event = data['attack']
         move_event = data['move']
         
-        self.doClientMovement (move_event)
+        self.error = self.doClientMovement (move_event)
         self.doClienAttack (attack_event)
         
     def doClientMovement(self, move_event):
         
             if move_event == 'u':
-                self.master.up()
+                return not self.master.up()
+              
             elif move_event == 'd':
-                self.master.down()
+                return not self.master.down()
+                
             elif move_event == 'l':
-                self.master.left()
+                return not self.master.left()
+             
             elif move_event == 'r':
-                self.master.right()
+                return not self.master.right()
+                
             elif move_event == 'ul':
-                self.master.upLeft()
+                return not self.master.upLeft()
+   
             elif move_event == 'ur':
-                self.master.upRight()
+                return not self.master.upRight()
+      
             elif move_event == 'dl':
-                self.master.downLeft()
+                return not self.master.downLeft()
+              
             elif move_event == 'dr':
-                self.master.downRight()
+                return not self.master.downRight()
+             
+                
+            if (move_event != None):
+                return True
+            return False
     
     def doClienAttack(self, attack_event):
         if attack_event != None:

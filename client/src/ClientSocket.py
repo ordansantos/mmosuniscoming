@@ -6,6 +6,8 @@ import Person
 import Character
 import threading
 import pygame
+import Queue
+
 class ClientSocket:
     
 
@@ -27,15 +29,25 @@ class ClientSocket:
         master = data['master']
         self.createMaster (master)
         
+        self.last_x = self.master.x
+        self.last_y = self.master.y
+        
+        
         self.attack_event = None
-        self.move_event = None
-        self.loop = 0
+        self.q_moves = Queue.Queue()
+        
+        
+        
     def resetEvents(self):
         self.attack_event = None
-        self.move_event = None
     
     def buildEventPackage(self):
-        data = {"move": self.move_event, "attack": self.attack_event}
+        move = None
+        
+        if (not self.q_moves.empty()):
+            move = self.q_moves.get()
+            
+        data = {"move": move, "attack": self.attack_event}
       
         data = json.dumps(data)
         self.resetEvents()
@@ -45,25 +57,35 @@ class ClientSocket:
     def setAttack (self, key):
         if self.master.attack_key == Character.Character.NO_ATTACK:
             self.attack_event = key
+            self.master.attack(key)
     
     def setMovementEvent (self, arrow):
         if self.master.attack_key == Character.Character.NO_ATTACK and self.master.life != 0:
             if arrow == [0, -1]:
-                self.move_event = 'u'
+                if (self.master.up()):
+                    self.q_moves.put ('u')
+                
             elif arrow == [0, 1]:
-                self.move_event = 'd'
+                if self.master.down():
+                    self.q_moves.put ('d')
             elif arrow == [-1, 0]:
-                self.move_event = 'l'
+                if self.master.left():
+                    self.q_moves.put ('l')
             elif arrow == [1, 0]:
-                self.move_event = 'r'
+                if self.master.right():
+                    self.q_moves.put ('r')
             elif arrow == [-1, -1]:
-                self.move_event = 'ul'
+                if self.master.upLeft():
+                    self.q_moves.put ('ul')
             elif arrow == [1, -1]:
-                self.move_event = 'ur'
+                if self.master.upRight():
+                    self.q_moves.put ('ur')
             elif arrow == [-1, 1]:
-                self.move_event = 'dl'
+                if self.master.downLeft():
+                    self.q_moves.put ('dl')
             elif arrow == [1, 1]:
-                self.move_event = 'dr'
+                if self.master.downRight():
+                    self.q_moves.put ('dr')
     
     def addBots(self, bots):
         
@@ -86,7 +108,16 @@ class ClientSocket:
         data = json.loads(data)
         self.updateEvents (data['events'])
         self.updateBotsPositions(data['moves'])
-        
+        error = data['error']
+   
+        if (error):
+            self.repairError()
+            print 'client error'
+            
+    def repairError(self):
+        q = Queue.Queue()
+        self.master.x = self.last_x
+        self.master.y = self.last_y
     
     def updateBotsPositions(self, moves):
         for m in moves:
@@ -96,10 +127,15 @@ class ClientSocket:
             #if life == 0:
             #    p.dying()
             if p.getPosition() == (x, y):
-                p.stopped()
+                p.stopTime()
             else:
-                p.doAMovement((x, y))
-            
+                if (p != self.master):
+                    p.doAMovement((x, y))
+                else:
+                    self.last_x = x;
+                    self.last_y = y
+                    print x, y
+                    
     def updateEvents (self, events):
         
         for e in events:
@@ -109,16 +145,15 @@ class ClientSocket:
                 self.addBot(e[1])
             if (event == 'a'):
                 p = Person.Person.getPersonById(e[1])
-                p.attack(e[2])
+                if (p != self.master):
+                    p.attack(e[2])
 
 class ClientConnection(threading.Thread):
     
     def run(self):
         
         self.client = self._Thread__kwargs['client']
-        self.clock = pygame.time.Clock()
         while (True):
-            self.clock.tick(20)
             self.client.updateGame()
     
     

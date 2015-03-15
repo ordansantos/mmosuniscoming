@@ -8,6 +8,7 @@ from pytmx.util_pygame import load_pygame
 import Person
 import TextBox
 import math
+import Walls
 
 import sys, os, traceback
 if sys.platform in ["win32", "win64"]: os.environ["SDL_VIDEO_CENTERED"] = "1"
@@ -38,7 +39,9 @@ class Screen:
         
         self.background = pygame.image.load(file('../tiles/background.png')).convert()
         self.tile_map = load_pygame('tile_map.tmx')
-
+        
+        Walls.Walls.pushWalls(self.tile_map)
+        
         self.preLoadTiles()
         self.frame_position = int(abs(self.screen_width - self.frame_width) / 2), int(abs(self.screen_height - self.frame_height) / 2)
         

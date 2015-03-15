@@ -69,6 +69,7 @@ class Character:
 		if (Walls.Walls.isThereWall((x, y))):
 			return False
 		
+		self.clearStopTime()
 		self.x = x
 		self.y = y
 		return True
@@ -159,8 +160,8 @@ class Character:
 	# movement handle
 	def doAMovement(self, (x1, y1)):
 		x, y = self.getPosition()
-		"""delay = 5
-		if (math.fabs(x1 - x) > 5 or math.fabs(y1 - y) > 5 ):
+		"""delay = 1
+		if (math.fabs(x1 - x) > delay or math.fabs(y1 - y) > delay ):
 			self.toPosition(x1, y1)
 			return"""
 		
@@ -325,6 +326,10 @@ class Character:
 		if ((millis - self.stop_time) > 400):
 			self.stopped()
 			self.stop_time = millis
+			
+	def clearStopTime(self):
+		millis = int(round(time.time() * 1000))
+		self.stop_time = millis
 		
 class Player(Character):
 	

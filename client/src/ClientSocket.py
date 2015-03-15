@@ -134,7 +134,6 @@ class ClientSocket:
                 else:
                     self.last_x = x;
                     self.last_y = y
-                    print x, y
                     
     def updateEvents (self, events):
         

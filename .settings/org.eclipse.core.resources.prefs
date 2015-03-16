@@ -1,3 +1,6 @@
 eclipse.preferences.version=1
+encoding//client/reader/form.py=utf-8
+encoding//client/src/Main.py=utf-8
 encoding//client/src/Menu.py=utf-8
+encoding//server/database/Database.py=utf-8
 encoding//server/src/Server.py=utf-8

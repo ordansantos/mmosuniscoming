@@ -132,7 +132,7 @@ class Main:
             height = self.screen.get_height()
             
             if op == 0:
-                Person.Person.restartPerson()
+                Person.Person.reset()
                 Menu.loading(width, height)
                 game = Game.Game(self.screen, width, height)
                 switch = game.run()

@@ -53,7 +53,7 @@ class Main:
                 self.clock.tick(10)
                 
                 # background
-                background = pygame.image.load("../tiles/menu/img/fog.jpg").convert()
+                background = pygame.image.load("../tiles/menu/img/mountains_moonlight.jpg").convert()
                 bg_size = Menu.getSizeByHeight(height, background.get_width(), background.get_height())
                 background = pygame.transform.scale(background, bg_size).convert()
                 
@@ -230,8 +230,7 @@ class Login:
                     self.false_pass._splitted = [s]
                     pygame.time.delay(50)
     
-    def run(self):
-        
+    def blitBackgroundLogin(self):
         # background
         background = pygame.image.load("../tiles/menu/img/moonlight.jpg").convert()
         bg_size = Menu.getSizeByWidth(self.width, background.get_width(), background.get_height())
@@ -244,10 +243,14 @@ class Login:
         # blit game name
         Main.blitGameName()
         # Text.blitAvulseText('Sun is coming', -1, int(self.height/8), font='../tiles/menu/fonts/Toxia_FRE.ttf', font_size=int(self.height/5), color=(255, 0, 0))
+    
+    def run(self):
         
+        self.blitBackgroundLogin()
+                
         x = self.width / 2 - (self.width - self.gap * 2) / 2
         y = self.height / 2 + self.gap - 5
-        Text.blitAvulseText('E-mail: ', x, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 255, 255))
+        Text.blitAvulseText('Nome: ', x, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 255, 255))
         Text.blitAvulseText('Senha: ', x, y + self.gap / 3, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 255, 255))
         
         # draw
@@ -313,7 +316,19 @@ class Login:
             
             # draw
             pygame.display.update()
-
+    
+    def showError(self, message):
+        
+        self.blitBackgroundLogin()
+        
+        y = self.height / 2 + self.gap - 5
+        # blit text
+        Text.blitAvulseText(message, -1, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=50, color=(255, 0, 0))
+        Text.blitAvulseText('Clique para continuar...', -1, y + self.gap / 1.5, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 0, 0))
+        
+        # draw
+        pygame.display.update()
+        
 if __name__ == '__main__':
     
     main = Main()
@@ -322,6 +337,8 @@ if __name__ == '__main__':
     master_informations = login.run()
     print master_informations[0]
     print master_informations[1]
+    
+    "in case of error, please use login.showError(messageError)"
     
     # make tests
     main.run()

@@ -270,7 +270,7 @@ class Player(Character):
 			if enemy != None:
 				enemy.setEnemy(self)
 				enemy.attacked = True
-				if self.transformed:
+				if self.transformed and isinstance(enemy, Bot):
 					enemy.life = 0
 				else:
 					enemy.life -= self.stranger

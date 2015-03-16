@@ -115,16 +115,14 @@ class MasterCRUD:
         cursor = DAO.executeQuery(sql, None)
         masters = MasterCRUD.getListMaster(cursor)
         if masters != []:
-            _master = None
             _master = masters[0]
-            if _master != None:
-                if _master.password == master.password:
-                    _master.password = None
-                    return _master
-                else:
-                    return "Senha Incorreta!"
+            if _master.password == master.password:
+                _master.password = None
+                return _master
+            else:
+                return "Senha incorreta!"
         else:
-            return "Email incorreto!"
+            return "Nome incorreto!"
     
     @ staticmethod
     def getMasterByEmail(master):
@@ -134,10 +132,9 @@ class MasterCRUD:
         cursor = DAO.executeQuery(sql, None)
         masters = MasterCRUD.getListMaster(cursor)
         if masters != []:
-            _master = None
             _master = masters[0]
-            if _master != None:
-                return _master
+            _master.password = None
+            return _master
     
     @ staticmethod
     def getAll():
@@ -145,6 +142,8 @@ class MasterCRUD:
                " FROM tb_master ")
         cursor = DAO.executeQuery(sql, None)
         masters = MasterCRUD.getListMaster(cursor)
+        for i in xrange(len(masters)):
+            masters[i].password = None
         return masters
     
     @ staticmethod

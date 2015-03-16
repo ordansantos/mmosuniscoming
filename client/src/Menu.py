@@ -178,41 +178,85 @@ class Menu:
                     
     @staticmethod
     def about(width, height):
-        
+
         frame = pygame.display.get_surface()
+        
+        def _back(mouse_pos):
+            if (mouse_pos[0] > (back_pos[0])) and (mouse_pos[1] > (back_pos[1])) and (mouse_pos[0] < (back_pos[0] + back.get_width()) and (mouse_pos[1]) < (back_pos[1] + back.get_height())):
+                return True
+            return False
+        
+        # background
+        background = pygame.image.load('../tiles/menu/img/chained.png').convert()
+        size = Menu.getSizeByHeight(height, background.get_width(), background.get_height())
+        #op_size = Menu.getSizeByWidth(width, background.get_width(), background.get_height())
+        background = pygame.transform.scale(background, size).convert()
+        
+        # blit background
         frame.fill((0, 0, 0))
-        text = """-- ENREDO --
+        frame.blit(background, (int(width / 2) - int(size[0] / 2), int(height / 2) - int(size[1] / 2)))
+        
+        text = """SOBRE O SUN IS COMING
 
-Este é um jogo de mundo aberto.
-O personagem principal é um vampiro que luta para sobreviver na era medieval.
-A tarefa do jogador é não deixar seu personagem morrer (acabar seu sangue). 
-Para tanto é necessário se alimentar dos habitantes da vila. 
+     Bem vindo ao Sun is coming, jogo multiplayer online de mundo aberto.
 
-Misturando o gênero de ação furtiva, o jogador deve tomar cuidado para não ser pego se alimentando nem muito menos transformado.
-O sol é um dos principais inimigos.
+     Aqui você desempenha papel de um vampiro que deve lutar para sobreviver. Sua tarefa é capturar sangue de qualquer personagem para que sua vida não acabe.
 
--- INSTRUÇÕES --
+     Seja furtivo! Tome cuidado para não ser pego se alimentando... Se os habitantes da cidade notarem suas ações eles vão ficar irritados com você e provavelmente irão se proteger com ajuda dos amigos...
 
-Você pode mover o personagem nas setas ou clicando no botão direito do mouse.
-Quando estiver em modo supremo, você será capaz de matar os bots com apenas um golpe.
-Para sair do jogo, pressione ESC a qualquer momento ;)
+     E lembre-se: O sol está chegando! Sua vida corre perigo!
+
+INSTRUÇÕES
+
+ - Você pode mover o personagem nas setas ou clicando com o botão direito do mouse.
+ - Use espaço para atacar.
+ - Quando estiver em modo supremo, você será capaz de matar os bots com apenas um golpe.
+ - Para sair do jogo, pressione ESC a qualquer momento ;)
 
 Divirta-se!
-
-Clique para voltar"""
-
-        txt = reader.Reader(unicode(text, 'utf8'), (int(width / 30), int(width / 30)), width - int(width / 30), 15, height - int(width / 30), font=os.path.join('../reader', 'MonospaceTypewriter.ttf'), fgcolor=(255, 255, 255), hlcolor=(250, 190, 150, 50), split=True)
-        txt.show()
+"""
+        
+        txt_size = width - int(width / 1.5), height - int(height / 2)
+        txt = reader.Reader(unicode(text, 'utf8'), (width / 2 - txt_size[0] / 2, height / 2 - txt_size[1] / 2), txt_size[1], height / 45, txt_size[1], font=os.path.join('../reader', 'MonospaceTypewriter.ttf'), fgcolor=(255, 255, 255), hlcolor=(250, 190, 150, 50), split=True)
         pygame.display.flip()
         
+        back = pygame.image.load('../tiles/menu/img/back.png').convert()
+        
         while True:
+
+            # back
+            back_size = Menu.getSizeByHeight(int(width / 15), back.get_width(), back.get_height())
+            back = pygame.transform.scale(back, back_size).convert_alpha()
+            back_pos = back.get_width() * 0.5, height - back.get_height() * 1.5
+            
+            # blit buttons screen
+            frame.blit(back, back_pos)
+            
+            txt.show()
+            
+            pygame.display.update()
+            
             # close game
             if pygame.event.peek(pygame.QUIT):
                 return 'QUIT'
             
             for e in pygame.event.get():
+                
+                mouse_pos = pygame.mouse.get_pos()
+
+                if _back(mouse_pos):
+                    back = pygame.image.load('../tiles/menu/img/back_red.png').convert_alpha()
+                else:
+                    back = pygame.image.load('../tiles/menu/img/back.png').convert_alpha()
+                
+                # scroll
+                if (e.type == pygame.MOUSEBUTTONDOWN or e.type == pygame.MOUSEBUTTONUP) and (e.button == 4 or e.button == 5):
+                    txt.update(e)
+                
+                # button clicked
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-                    return 'NEXT'
+                    if _back(mouse_pos):
+                        return 'NEXT'
 
 class Text:
     

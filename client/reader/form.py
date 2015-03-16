@@ -241,10 +241,15 @@ class Form(pygame.Rect,object):
         if (line,index) != (self._line,self._index):
             self._adjust()
     
-    def setInitialMessage(self):
+    def setInitialGameTextBox(self):
         self._cursor = False
         self._index = 2
         self._splitted = ['> ']
+    
+    def setBlanckMessage(self):
+        self._cursor = False
+        self._index = 0
+        self._splitted = ['']
     
 if __name__ == '__main__':
     import os.path

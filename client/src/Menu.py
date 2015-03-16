@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import sys
+from abc import abstractmethod
 sys.path.append("../")
 
 import sys, os, traceback
@@ -14,18 +15,8 @@ import reader.reader as reader
 
 class Menu:
     
-    def __init__(self, screen, width, height):
-        # frame
-        self.frame = screen
-        self.width = width
-        self.height = height
-        pygame.font.init()
-        if not pygame.font.get_init():
-            pygame.quit()
-            print 'Pygame fonts module broken.!'
-            sys.exit()
-    
-    def getSizeByHeight(self, reference, width, height):
+    @staticmethod
+    def getSizeByHeight(reference, width, height):
         gap = reference - height
         perc = 0
         size = 0
@@ -38,7 +29,8 @@ class Menu:
             size = width + int(width * perc / 100), height + gap
         return size
     
-    def getSizeByWidth(self, reference, width, height):
+    @staticmethod
+    def getSizeByWidth(reference, width, height):
         gap = reference - width
         perc = 0
         size = 0
@@ -51,52 +43,22 @@ class Menu:
             size = width + gap, height + int(height * perc / 100)
         return size
     
-    def selectMenu(self):
-        
-        menus = [unicode('Jogar', 'utf8'), unicode('Opções', 'utf8'), unicode('Sobre', 'utf8'), unicode('Sair', 'utf8')]
-        menu = Choose(menus)
-        
-        while True:
-            
-            # background
-            self.background = pygame.image.load("../tiles/menu/background.png").convert()
-            self.bg_size = self.getSizeByHeight(self.height[0], self.background.get_width(), self.background.get_height())
-            self.bg_size = self.bg_size[0], self.bg_size[1]
-            self.background = pygame.transform.scale(self.background, self.bg_size).convert()
-            
-            # blit background
-            self.frame.fill((0, 0, 0))
-            self.frame.blit(self.background, (int(self.width[0] / 2) - int(self.bg_size[0] / 2), 0))
-            
-            # blit menu
-            menu.show_horizontal((int(self.width[0] / 15), self.height[0] - int(self.height[0] / 15) * 2))
-            
-            # draw
-            pygame.display.flip()
-            
-            # close game
-            if pygame.event.peek(pygame.QUIT):
-                return 4
-            
-            for e in pygame.event.get():
-                mouse_pos = pygame.mouse.get_pos()
-                # button clicked
-                if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-                    for i in xrange(len(menus)):
-                        if menu.isMouseInMenu(i):
-                            return i
-    
-    def loading(self):
+    @staticmethod
+    def loading(width, height):
         # loading
-        self.frame.fill((0, 0, 0))
-        loading = pygame.image.load("../tiles/menu/loading.jpeg").convert()
-        loading = pygame.transform.scale(loading, (self.width[0], self.height[0]))
-        self.frame.blit(loading, (0, 0))
+        frame = pygame.display.get_surface()
+        frame.fill((0, 0, 0))
+        loading = pygame.image.load("../tiles/menu/img/loading.jpeg").convert()
+        loading = pygame.transform.scale(loading, (width, height))
+        frame.blit(loading, (0, 0))
         
         # draw
         pygame.display.flip()
     
-    def options(self):
+    @staticmethod
+    def options(width, height):
+        
+        frame = pygame.display.get_surface()
         
         # functions
         def _back(mouse_pos):
@@ -104,70 +66,71 @@ class Menu:
                 return True
             return False
         
-        def _small(mouse_pos):
-            if (mouse_pos[0] > (small_pos[0])) and (mouse_pos[1] > (small_pos[1])) and (mouse_pos[0] < (small_pos[0] + small_screen.get_width()) and (mouse_pos[1]) < (small_pos[1] + small_screen.get_height())):
+        def _right_arrow(mouse_pos):
+            if (mouse_pos[0] > (right_arrow_pos[0])) and (mouse_pos[1] > (right_arrow_pos[1])) and (mouse_pos[0] < (right_arrow_pos[0] + right_arrow.get_width()) and (mouse_pos[1]) < (right_arrow_pos[1] + right_arrow.get_height())):
                 return True
             return False
         
-        def _full(mouse_pos):
-            if (mouse_pos[0] > (full_pos[0])) and (mouse_pos[1] > (full_pos[1])) and (mouse_pos[0] < (full_pos[0] + full_screen.get_width()) and (mouse_pos[1]) < (full_pos[1] + full_screen.get_height())):
+        def _left_arrow(mouse_pos):
+            if (mouse_pos[0] > (left_arrow_pos[0])) and (mouse_pos[1] > (left_arrow_pos[1])) and (mouse_pos[0] < (left_arrow_pos[0] + left_arrow.get_width()) and (mouse_pos[1]) < (left_arrow_pos[1] + left_arrow.get_height())):
                 return True
             return False
         
-        color_in = (255, 0, 0)
-        color_out = (255, 255, 255)
+        back = pygame.image.load('../tiles/menu/img/back.png').convert()
+        right_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
+        right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
+        left_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
         
-        small_color = color_out
-        full_color = color_out
+        # character
+        sprites = [[None for j in xrange(2)] for i in xrange(4)]
         
-        back = pygame.image.load('../tiles/menu/back.png').convert()
+        sprites[0][0] = ('../characters/sprites/ordan.png')
+        sprites[1][0] = ('../characters/sprites/pink_woman.png')
+        sprites[2][0] = ('../characters/sprites/black_man.png')
+        sprites[3][0] = ('../characters/sprites/blond_woman.png')
+        
+        size_sprite = int(height / 4), int(height / 4)
+        for i in xrange(len(sprites)):
+            pic = pygame.image.load(file(sprites[i][0])).convert_alpha()
+            sprites[i][1] = pic.subsurface((0, 2 * 64, 64, 64)).convert_alpha()
+            sprites[i][1] = pygame.transform.scale(sprites[i][j], size_sprite)
+        
+        master = 0
         
         while True:
             
             # options init
-            options_background = pygame.image.load('../tiles/menu/options/background.png').convert()
-            op_size = self.getSizeByHeight(self.height[0], options_background.get_width(), options_background.get_height())
-            options_background = pygame.transform.scale(options_background, op_size).convert()
+            options_background = pygame.image.load('../tiles/menu/img/mountains_moonlight.jpg').convert_alpha()
+            op_size = Menu.getSizeByHeight(height, options_background.get_width(), options_background.get_height())
+            #op_size = Menu.getSizeByWidth(width, options_background.get_width(), options_background.get_height())
+            options_background = pygame.transform.scale(options_background, op_size).convert_alpha()
             
             # blit options
-            self.frame.fill((0, 0, 0))
-            self.frame.blit(options_background, (int(self.width[0] / 2) - int(op_size[0] / 2), 0))
+            frame.fill((0, 0, 0))
+            frame.blit(options_background, (int(width / 2) - int(op_size[0] / 2), int(height / 2) - int(op_size[1] / 2)))
             
             # buttons
     
             # back
-            back_size = self.getSizeByHeight(int(self.width[0] / 15), back.get_width(), back.get_height())
-            back = pygame.transform.scale(back, back_size).convert()
-            back_pos = back.get_width() * 0.5, self.height[0] - back.get_height() * 1.5
-            
-            # _text
-            font_size = int(self.height[0] / 20)
-            _text = pygame.font.Font('../tiles/menu/Purisa-Bold.ttf', font_size)
-            
-            # _text screen
-            screen = _text.render("Tela", 1, color_out)
-            screen_pos = screen.get_width() * 0.2, screen.get_height() * 0.5
-            small_screen = _text.render("Pequena", 1, small_color)
-            small_pos = screen_pos[0], screen_pos[1] + screen.get_height()
-            full_screen = _text.render("Grande", 1, full_color)
-            full_pos = small_pos[0] + small_screen.get_width(), small_pos[1]
-            
-            # highlighted
-            stain_screen = pygame.image.load('../tiles/menu/options/stain.png').convert()
-            if self.width[0] == 800:
-                stain_size = self.getSizeByWidth(int(small_screen.get_width() * 0.5), stain_screen.get_width(), stain_screen.get_height())
-                stain_pos = int(small_pos[0] * 1.6), small_pos[1] + int(small_screen.get_height() * 0.8)
-            else:
-                stain_size = self.getSizeByWidth(int(full_screen.get_width() * 0.5), stain_screen.get_width(), stain_screen.get_height())
-                stain_pos = int(full_pos[0] * 1.15), full_pos[1] + int(full_screen.get_height() * 0.8)
-            stain_screen = pygame.transform.scale(stain_screen, stain_size).convert()
+            back_size = Menu.getSizeByHeight(int(width / 15), back.get_width(), back.get_height())
+            back = pygame.transform.scale(back, back_size).convert_alpha()
+            back_pos = back.get_width() * 0.5, height - back.get_height() * 1.5
             
             # blit buttons screen
-            self.frame.blit(back, back_pos)
-            self.frame.blit(screen, screen_pos)
-            self.frame.blit(small_screen, small_pos)
-            self.frame.blit(full_screen, full_pos)
-            self.frame.blit(stain_screen, stain_pos)
+            frame.blit(back, back_pos)
+            
+            # character
+            character_pos = int(width / 10), int(height / 2)
+            frame.blit(sprites[master][1], character_pos)
+            
+            left_arrow_pos = character_pos[0] - int(width / 20), character_pos[1] + int(character_pos[1] / 4)
+            right_arrow_pos = character_pos[0] + size_sprite[0], character_pos[1] + int(character_pos[1] / 4)
+            size_arrow = size_sprite[0] / 5, size_sprite[1] / 5
+            right_arrow = pygame.transform.scale(right_arrow, size_arrow).convert_alpha()
+            left_arrow = pygame.transform.scale(left_arrow, size_arrow).convert_alpha()
+            
+            frame.blit(right_arrow, right_arrow_pos)
+            frame.blit(left_arrow, left_arrow_pos)
             
             # draw
             pygame.display.flip()
@@ -176,42 +139,48 @@ class Menu:
             
             # close game
             if pygame.event.peek(pygame.QUIT):
-                return 'QUIT'
+                return ['QUIT']
             
             for e in pygame.event.get():
                 
                 mouse_pos = pygame.mouse.get_pos()
                 
                 if _back(mouse_pos):
-                    back = pygame.image.load('../tiles/menu/back_red.png').convert()
+                    back = pygame.image.load('../tiles/menu/img/back_red.png').convert_alpha()
                 else:
-                    back = pygame.image.load('../tiles/menu/back.png').convert()
-                if _small(mouse_pos):
-                    small_color = color_in
+                    back = pygame.image.load('../tiles/menu/img/back.png').convert_alpha()
+                
+                if _right_arrow(mouse_pos):
+                    right_arrow = pygame.image.load('../tiles/menu/img/arrow_red.png').convert_alpha()
+                    right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
                 else:
-                    small_color = color_out
-                if _full(mouse_pos):
-                    full_color = color_in
+                    right_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
+                    right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
+                
+                if _left_arrow(mouse_pos):
+                    left_arrow = pygame.image.load('../tiles/menu/img/arrow_red.png').convert_alpha()
                 else:
-                    full_color = color_out
+                    left_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
                 
                 # button clicked
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
                     if _back(mouse_pos):
-                        return 'NEXT'
-                    elif _small(mouse_pos):
-                        if self.width[0] > self.width[1]:
-                            self.width[0], self.width[1] = [self.width[1], self.width[0]]
-                            self.height[0], self.height[1] = [self.height[1], self.height[0]]
-                            self.frame = pygame.display.set_mode((self.width[0], self.height[0]), HWSURFACE | DOUBLEBUF)
-                    elif _full(mouse_pos):
-                        if self.width[0] < self.width[1]:
-                            self.width[0], self.width[1] = [self.width[1], self.width[0]]
-                            self.height[0], self.height[1] = [self.height[1], self.height[0]]
-                            self.frame = pygame.display.set_mode((self.width[0], self.height[0]), FULLSCREEN | HWSURFACE | DOUBLEBUF)
-    
-    def instructions(self):
-        self.frame.fill((0, 0, 0))
+                        return ['MASTER', sprites[master][0]]
+                    # character
+                    if _right_arrow(mouse_pos):
+                        master += 1
+                        if master > 3:
+                            master = 0
+                    elif _left_arrow(mouse_pos):
+                        master -= 1
+                        if master < 0:
+                            master = 3
+                    
+    @staticmethod
+    def about(width, height):
+        
+        frame = pygame.display.get_surface()
+        frame.fill((0, 0, 0))
         text = """-- ENREDO --
 
 Este é um jogo de mundo aberto.
@@ -232,7 +201,7 @@ Divirta-se!
 
 Clique para voltar"""
 
-        txt = reader.Reader(unicode(text, 'utf8'), (int(self.edges / 2), int(self.edges / 2)), self.width[0] - self.edges, 15, self.height[0] - self.edges, font=os.path.join('../reader', 'MonospaceTypewriter.ttf'), fgcolor=(255, 255, 255), hlcolor=(250, 190, 150, 50), split=True)
+        txt = reader.Reader(unicode(text, 'utf8'), (int(width / 30), int(width / 30)), width - int(width / 30), 15, height - int(width / 30), font=os.path.join('../reader', 'MonospaceTypewriter.ttf'), fgcolor=(255, 255, 255), hlcolor=(250, 190, 150, 50), split=True)
         txt.show()
         pygame.display.flip()
         
@@ -244,10 +213,10 @@ Clique para voltar"""
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
                     return 'NEXT'
+
+class Text:
     
-class Choose:
-    
-    def __init__(self, menus):
+    def __init__(self, menus, font_size):
         pygame.font.init()
         if not pygame.font.get_init():
             pygame.quit()
@@ -259,8 +228,7 @@ class Choose:
         self.color_out = (255, 255, 255)
         height = pygame.display.get_surface().get_height()
         self.gap = int(height / 20)
-        font_size = int(height / 20)
-        self._text = pygame.font.Font('../tiles/menu/Purisa-Bold.ttf', font_size)
+        self._text = pygame.font.Font('../tiles/menu/fonts/Purisa-Bold.ttf', font_size)
         
         # name, position
         self.menus = [[None for j in xrange(3)] for i in xrange(len(menus))]
@@ -277,7 +245,7 @@ class Choose:
         height = position[1]
         
         for i in xrange(1, len(self.menus)):
-            x = self.menus[i-1][2][0] + self.menus[i-1][0].get_width() + self.gap
+            x = self.menus[i - 1][2][0] + self.menus[i - 1][0].get_width() + self.gap
             self.menus[i][2] = [x, height]
         
         self.blitMenus()
@@ -303,3 +271,22 @@ class Choose:
         if (mouse_pos[0] > (menu_pos[0])) and (mouse_pos[1] > (menu_pos[1])) and (mouse_pos[0] < (menu_pos[0] + menu_size[0]) and (mouse_pos[1]) < (menu_pos[1] + menu_size[1])):
             return True
         return False
+    
+    def getPosMenu(self, menu_number):
+        return self.menus[menu_number][2][0], self.menus[menu_number][2][1]
+    
+    def getSizeMenu(self, menu_number):
+        return self.menus[menu_number][0].get_width(), self.menus[menu_number][0].get_height()
+    
+    @staticmethod
+    def blitAvulseText(text, x=-1, y=-1, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 255, 255)):
+        _text = pygame.font.Font(font, font_size)
+        show = _text.render(text, 1, color)
+        if x == -1:
+            _src = pygame.display.get_surface()
+            x = (_src.get_width() / 2) - (show.get_width() / 2)
+        if y == -1:
+            _src = pygame.display.get_surface()
+            y = (_src.get_height() / 2) - (show.get_height() / 2)
+        pygame.display.get_surface().blit(show, (x, y))
+        return show

@@ -56,127 +56,6 @@ class Menu:
         pygame.display.flip()
     
     @staticmethod
-    def options(width, height):
-        
-        frame = pygame.display.get_surface()
-        
-        # functions
-        def _back(mouse_pos):
-            if (mouse_pos[0] > (back_pos[0])) and (mouse_pos[1] > (back_pos[1])) and (mouse_pos[0] < (back_pos[0] + back.get_width()) and (mouse_pos[1]) < (back_pos[1] + back.get_height())):
-                return True
-            return False
-        
-        def _right_arrow(mouse_pos):
-            if (mouse_pos[0] > (right_arrow_pos[0])) and (mouse_pos[1] > (right_arrow_pos[1])) and (mouse_pos[0] < (right_arrow_pos[0] + right_arrow.get_width()) and (mouse_pos[1]) < (right_arrow_pos[1] + right_arrow.get_height())):
-                return True
-            return False
-        
-        def _left_arrow(mouse_pos):
-            if (mouse_pos[0] > (left_arrow_pos[0])) and (mouse_pos[1] > (left_arrow_pos[1])) and (mouse_pos[0] < (left_arrow_pos[0] + left_arrow.get_width()) and (mouse_pos[1]) < (left_arrow_pos[1] + left_arrow.get_height())):
-                return True
-            return False
-        
-        back = pygame.image.load('../tiles/menu/img/back.png').convert()
-        right_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
-        right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
-        left_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
-        
-        # character
-        sprites = [[None for j in xrange(2)] for i in xrange(4)]
-        
-        sprites[0][0] = ('../characters/sprites/ordan.png')
-        sprites[1][0] = ('../characters/sprites/pink_woman.png')
-        sprites[2][0] = ('../characters/sprites/black_man.png')
-        sprites[3][0] = ('../characters/sprites/blond_woman.png')
-        
-        size_sprite = int(height / 4), int(height / 4)
-        for i in xrange(len(sprites)):
-            pic = pygame.image.load(file(sprites[i][0])).convert_alpha()
-            sprites[i][1] = pic.subsurface((0, 2 * 64, 64, 64)).convert_alpha()
-            sprites[i][1] = pygame.transform.scale(sprites[i][j], size_sprite)
-        
-        master = 0
-        
-        while True:
-            
-            # options init
-            options_background = pygame.image.load('../tiles/menu/img/mountains_moonlight.jpg').convert_alpha()
-            op_size = Menu.getSizeByHeight(height, options_background.get_width(), options_background.get_height())
-            #op_size = Menu.getSizeByWidth(width, options_background.get_width(), options_background.get_height())
-            options_background = pygame.transform.scale(options_background, op_size).convert_alpha()
-            
-            # blit options
-            frame.fill((0, 0, 0))
-            frame.blit(options_background, (int(width / 2) - int(op_size[0] / 2), int(height / 2) - int(op_size[1] / 2)))
-            
-            # buttons
-    
-            # back
-            back_size = Menu.getSizeByHeight(int(width / 15), back.get_width(), back.get_height())
-            back = pygame.transform.scale(back, back_size).convert_alpha()
-            back_pos = back.get_width() * 0.5, height - back.get_height() * 1.5
-            
-            # blit buttons screen
-            frame.blit(back, back_pos)
-            
-            # character
-            character_pos = int(width / 10), int(height / 2)
-            frame.blit(sprites[master][1], character_pos)
-            
-            left_arrow_pos = character_pos[0] - int(width / 20), character_pos[1] + int(character_pos[1] / 4)
-            right_arrow_pos = character_pos[0] + size_sprite[0], character_pos[1] + int(character_pos[1] / 4)
-            size_arrow = size_sprite[0] / 5, size_sprite[1] / 5
-            right_arrow = pygame.transform.scale(right_arrow, size_arrow).convert_alpha()
-            left_arrow = pygame.transform.scale(left_arrow, size_arrow).convert_alpha()
-            
-            frame.blit(right_arrow, right_arrow_pos)
-            frame.blit(left_arrow, left_arrow_pos)
-            
-            # draw
-            pygame.display.flip()
-            
-            # choose
-            
-            # close game
-            if pygame.event.peek(pygame.QUIT):
-                return ['QUIT']
-            
-            for e in pygame.event.get():
-                
-                mouse_pos = pygame.mouse.get_pos()
-                
-                if _back(mouse_pos):
-                    back = pygame.image.load('../tiles/menu/img/back_red.png').convert_alpha()
-                else:
-                    back = pygame.image.load('../tiles/menu/img/back.png').convert_alpha()
-                
-                if _right_arrow(mouse_pos):
-                    right_arrow = pygame.image.load('../tiles/menu/img/arrow_red.png').convert_alpha()
-                    right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
-                else:
-                    right_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
-                    right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
-                
-                if _left_arrow(mouse_pos):
-                    left_arrow = pygame.image.load('../tiles/menu/img/arrow_red.png').convert_alpha()
-                else:
-                    left_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
-                
-                # button clicked
-                if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-                    if _back(mouse_pos):
-                        return ['MASTER', sprites[master][0]]
-                    # character
-                    if _right_arrow(mouse_pos):
-                        master += 1
-                        if master > 3:
-                            master = 0
-                    elif _left_arrow(mouse_pos):
-                        master -= 1
-                        if master < 0:
-                            master = 3
-                    
-    @staticmethod
     def about(width, height):
 
         frame = pygame.display.get_surface()
@@ -257,6 +136,133 @@ Divirta-se!
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
                     if _back(mouse_pos):
                         return 'NEXT'
+
+    @staticmethod
+    def selectCharacter(width, height):
+        
+        from Main import Main
+        
+        frame = pygame.display.get_surface()
+        
+        # functions
+        def _right_arrow(mouse_pos):
+            if (mouse_pos[0] > (right_arrow_pos[0])) and (mouse_pos[1] > (right_arrow_pos[1])) and (mouse_pos[0] < (right_arrow_pos[0] + right_arrow.get_width()) and (mouse_pos[1]) < (right_arrow_pos[1] + right_arrow.get_height())):
+                return True
+            return False
+        
+        def _left_arrow(mouse_pos):
+            if (mouse_pos[0] > (left_arrow_pos[0])) and (mouse_pos[1] > (left_arrow_pos[1])) and (mouse_pos[0] < (left_arrow_pos[0] + left_arrow.get_width()) and (mouse_pos[1]) < (left_arrow_pos[1] + left_arrow.get_height())):
+                return True
+            return False
+        
+        def onButton(mouse_pos):
+            if mouse_pos[0] >= button_pos[0] and mouse_pos[1] >= button_pos[1] and mouse_pos[0] < button_pos[0] + button.get_width() and mouse_pos[1] < button_pos[1] + button.get_height():
+                return True
+            return False
+        
+        right_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
+        right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
+        left_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
+        
+        # character
+        sprites = [[None for j in xrange(2)] for i in xrange(4)]
+        
+        sprites[0][0] = ('../characters/sprites/ordan.png')
+        sprites[1][0] = ('../characters/sprites/pink_woman.png')
+        sprites[2][0] = ('../characters/sprites/black_man.png')
+        sprites[3][0] = ('../characters/sprites/blond_woman.png')
+        
+        size_sprite = int(height / 4), int(height / 4)
+        for i in xrange(len(sprites)):
+            pic = pygame.image.load(file(sprites[i][0])).convert_alpha()
+            sprites[i][1] = pic.subsurface((0, 2 * 64, 64, 64)).convert_alpha()
+            sprites[i][1] = pygame.transform.scale(sprites[i][j], size_sprite)
+        
+        master = 0
+        
+        # button
+        button_white = Text.blitAvulseText('INICIAR', -1, -1, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=int(height/20), color=(255, 255, 255))
+        button_red = Text.blitAvulseText('INICIAR', -1, -1, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=int(height/20), color=(255, 0, 0))
+        button = button_white
+        button_pos = width / 2 - button.get_width() / 2, height / 2 + size_sprite[1] * 0.8
+        
+        while True:
+            
+            # options init
+            options_background = pygame.image.load('../tiles/menu/img/mountains_moonlight.jpg').convert_alpha()
+            op_size = Menu.getSizeByHeight(height, options_background.get_width(), options_background.get_height())
+            #op_size = Menu.getSizeByWidth(width, options_background.get_width(), options_background.get_height())
+            options_background = pygame.transform.scale(options_background, op_size).convert_alpha()
+            
+            # blit options
+            frame.fill((0, 0, 0))
+            #frame.blit(options_background, (int(width / 2) - int(op_size[0] / 2), int(height / 2) - int(op_size[1] / 2)))
+            
+            # Character
+            character_pos = width / 2 - size_sprite[0] / 2, height / 2 - size_sprite[1] / 2
+            frame.blit(sprites[master][1], character_pos)
+            
+            # resize
+            size_arrow = size_sprite[0] / 5, size_sprite[1] / 5
+            right_arrow = pygame.transform.scale(right_arrow, size_arrow).convert_alpha()
+            left_arrow = pygame.transform.scale(left_arrow, size_arrow).convert_alpha()
+            
+            # define place arrows
+            left_arrow_pos = character_pos[0] - size_arrow[0], character_pos[1] * 1.5 - size_arrow[1]
+            right_arrow_pos = character_pos[0] + size_sprite[0], character_pos[1] * 1.5 - size_arrow[1]
+            
+            # blit arrows            
+            frame.blit(right_arrow, right_arrow_pos)
+            frame.blit(left_arrow, left_arrow_pos)
+            
+            # game name
+            Main.blitGameName()
+            
+            # blit button
+            frame.blit(button, button_pos)
+            
+            # draw
+            pygame.display.flip()
+            
+            # close game
+            if pygame.event.peek(pygame.QUIT):
+                return ['QUIT']
+            
+            for e in pygame.event.get():
+                
+                mouse_pos = pygame.mouse.get_pos()
+                
+                # mousemotion
+                if onButton(mouse_pos):
+                    button = button_red
+                else:
+                    button = button_white
+                
+                if _right_arrow(mouse_pos):
+                    right_arrow = pygame.image.load('../tiles/menu/img/arrow_red.png').convert_alpha()
+                    right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
+                else:
+                    right_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
+                    right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
+                
+                if _left_arrow(mouse_pos):
+                    left_arrow = pygame.image.load('../tiles/menu/img/arrow_red.png').convert_alpha()
+                else:
+                    left_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
+                
+                # button clicked
+                if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+                    # character
+                    if _right_arrow(mouse_pos):
+                        master += 1
+                        if master > 3:
+                            master = 0
+                    elif _left_arrow(mouse_pos):
+                        master -= 1
+                        if master < 0:
+                            master = 3
+                    elif onButton(mouse_pos):
+                        return sprites[master][0]
 
 class Text:
     

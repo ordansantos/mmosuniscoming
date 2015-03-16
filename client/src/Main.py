@@ -133,8 +133,9 @@ class Main:
             
             if op == 0:
                 Person.Person.reset()
+                path_image = Menu.selectCharacter(width, height)
                 Menu.loading(width, height)
-                game = Game.Game(self.screen, width, height)
+                game = Game.Game(self.screen, width, height, path_image)
                 switch = game.run()
                 if switch == 'QUIT':
                     return 'QUIT'

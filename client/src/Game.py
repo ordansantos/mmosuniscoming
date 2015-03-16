@@ -12,9 +12,9 @@ import sys
 
 class Game:
     
-    def __init__(self, screen, width, height):
+    def __init__(self, screen, width, height, path_image):
         
-        
+        print path_image
         
         self.mouse_pos_right_click = None
         

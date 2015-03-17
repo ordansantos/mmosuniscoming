@@ -48,7 +48,7 @@ class TextBox:
                         self.writer._cursor = True
                         self.writer.update(e)
             self.handleReaderBox(e)
-        return ''
+        return None
     
     def handleReaderBox(self, event):
         if self.onTextBox(pygame.mouse.get_pos()):

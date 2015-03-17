@@ -1,13 +1,10 @@
 
-
-import database 
-
 import threading
 import json
 import Person
 import Walls
 import pygame
-
+import database 
 import Master
 
 from pygame.locals import *
@@ -35,7 +32,7 @@ class Client:
                 x, y = b.getPosition()
                 image = b.getImage()
                 
-                bot_list.append (( b.getId(), x, y, image, b.name))
+                bot_list.append (( b.getId(), x, y, image))
             
         return bot_list
     
@@ -56,7 +53,7 @@ class Client:
         return list_positions
     
     @staticmethod
-    def getNewPlayer(image, name):
+    def getNewPlayer():
         
         x, y = 150, 350
         
@@ -64,56 +61,42 @@ class Client:
             x += 1
             y += 1
                 
-        new = Person.Person.getNewPlayer(x, y, image, name)
+        new = Person.Person.getNewPlayer(x, y, '../characters/sprites/ordan.png')
         x, y = new.getPosition()
         image = new.getImage()
         id = new.getId()
         
-        Client.events.append(('c', (id, x, y, image, name)))
+        Client.events.append(('c', (id, x, y, image)))
         
-        return (id, x, y, image, name)
+        return (id, x, y, image)
 
     
         
 class ClientThread(threading.Thread):
     
-    def checkLogin (self, data):
-        print '.'+data['email']+'.', '.'+data['senha']+'.'
-        master_banco = Master.Master(email=data['email'], password=data['senha'])
-        
-        message = database.MasterCRUD.getMasterByLogin(master_banco)
-        
-        if (isinstance(message, Master.Master)): 
-            message = 'SUCESS'
-            
-        return message
-        
     def run(self):
-
+        return
         self.conn = self._Thread__kwargs['conn']
         
         data = self.conn.recv(1024)
         
         data = json.loads(data)
-
-        if (data['check']):
-            message = self.checkLogin(data)
-            self.conn.sendall (message)
-            return
         
-        master_banco = Master.Master(email=data['email'], password=data['senha'])
-        master_banco = database.MasterCRUD.getMasterByLogin(master_banco)
-        if (not isinstance(master_banco, Master.Master)): 
-            return
+        master_banco = Master.Master(data['email'], data['senha'])
+        print 'aqui'
+        print Database.MasterCRUD.getMasterByLogin(master)
+        self.conn.sendall ("mandou")
+        return
+        
+        #print data
+        
         
         self.last_event = 0
         
         #enviando personagens criados e o id do master
-        master_tuple = Client.getNewPlayer(data['image'], data['email'])
+        master_tuple = Client.getNewPlayer()
 
         self.master = Person.Person.getPersonById(master_tuple[0])
-
-        self.master.all_killed = int(master_banco.killed)
 
         try:
         
@@ -125,11 +108,6 @@ class ClientThread(threading.Thread):
             self.conn.sendall (data_string)
             
             while True:
-                
-                if (int(master_banco.killed) !=  int(self.master.all_killed)):
-                    master_banco.killed = str(self.master.all_killed)
-                    database.MasterCRUD.updateMaster(master_banco)
-                
                 self.error = False
                 #print self.master.life
                 data = self.conn.recv(1024)
@@ -157,7 +135,7 @@ class ClientThread(threading.Thread):
             self.conn.close()
             self.master.dead()
             Client.events.append(('d', self.master.getId()))
-        
+        """
     def doClientEvents(self, data):
         data = json.loads(data)
         

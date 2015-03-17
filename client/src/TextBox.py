@@ -37,11 +37,10 @@ class TextBox:
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_KP_ENTER or e.key == pygame.K_RETURN:
                         message = self.writer.OUTPUT
-                        message = str(message)[2:len(message)]
-                        self.writer.setInitialMessage()
+                        
+                        message = message[2:len(message)]
+                        self.writer.setInitialGameTextBox()
                         self.writing_now = False
-                        # just one test
-                        self.updateReaderMessage(message)
                         return message
                     else:
                         if ((e.key == pygame.K_BACKSPACE or e.key == pygame.K_LEFT) and len(self.writer.OUTPUT) == 2) or e.key == pygame.K_QUOTEDBL:

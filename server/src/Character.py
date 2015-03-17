@@ -11,14 +11,14 @@ class Character:
 	SLASH = pygame.K_SPACE
 	REBUKE = pygame.K_e
 	
-	def __init__(self, (x, y), path_image, death_blood):
+	def __init__(self, (x, y), path_image, death_blood, name=""):
 		# essential
 		self.x = x
 		self.y = y
 		self.setPosition((x, y))
 		self.initial_position = (x, y)
 		self.id = 0
-		self.name = 'Example'
+		self.name = name
 		self.life = 100
 		# speed
 		self.px = 1
@@ -205,7 +205,7 @@ class Character:
 
 class Player(Character):
 	
-	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_vamp.png'):
+	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_vamp.png', name=""):
 		
 		Character.__init__(self, (x, y), normal_path, death_blood)
 		
@@ -308,7 +308,7 @@ class Player(Character):
 
 class Bot(Character):
 	
-	def __init__(self, (x, y)=(0, 0), image='../characters/sprites/ordan.png', death_blood='../characters/img/death_blood.png', movement_range=25):
+	def __init__(self, (x, y)=(0, 0), image='../characters/sprites/ordan.png', death_blood='../characters/img/death_blood.png', movement_range=25, name=""):
 		
 		Character.__init__(self, (x, y), image, death_blood)
 		

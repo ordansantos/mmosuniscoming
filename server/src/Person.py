@@ -9,6 +9,9 @@ class Person:
     CONST_MAX_WH = 7200
     person_list = []
     id_global = 0
+    email = ""
+    senha = ""
+    image = ""
     
     @staticmethod
     def getIdGlobal():
@@ -16,11 +19,11 @@ class Person:
         return Person.id_global - 1
     
     @staticmethod
-    def getNewPlayer(x, y, image = '../characters/sprites/ordan.png'):
+    def getNewPlayer(x, y, image = '../characters/sprites/ordan.png', name=""):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
-        p = Character.Player((x, y), image)
+        p = Character.Player((x, y), image, name=name)
         
         p.setId(Person.getIdGlobal())
         
@@ -32,11 +35,11 @@ class Person:
         return None
     
     @staticmethod
-    def getNewBot(x, y, image = '../characters/img/blond_man.png'):
+    def getNewBot(x, y, image = '../characters/img/blond_man.png', name=""):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
-        p = Character.Bot((x, y), image)
+        p = Character.Bot((x, y), image, name=name)
         
         p.setId(Person.getIdGlobal())
         if (Walls.Walls.pushPerson(x, y, p)):

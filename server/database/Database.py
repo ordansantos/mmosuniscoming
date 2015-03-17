@@ -11,7 +11,7 @@ class DAO:
     
     config = {
         'user': 'root',
-        'password': 'ifpbinfo',
+        'password': '',
         'host': '127.0.0.1',
         'database': 'suniscoming'
     }
@@ -99,12 +99,10 @@ class MasterCRUD:
     @ staticmethod
     def updateMaster(master):
         sql = ("UPDATE tb_master SET " \
-               " nm_email = %s, " \
-               " nm_password = %s, " \
                " nr_killed = %s, " \
                " nr_life = %s " \
                " WHERE id_master = %s ")
-        parameters_tuple = (master.email, master.password, master.killed, master.life, master.idMaster)
+        parameters_tuple = (master.killed, master.life, master.idMaster)
         return DAO.executeUpdate(sql, parameters_tuple)
     
     @ staticmethod
@@ -116,7 +114,7 @@ class MasterCRUD:
         masters = MasterCRUD.getListMaster(cursor)
         if masters != []:
             _master = masters[0]
-            if _master.password == master.password:
+            if str(_master.password) == str(master.password):
                 _master.password = None
                 return _master
             else:

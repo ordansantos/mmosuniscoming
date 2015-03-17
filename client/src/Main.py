@@ -7,13 +7,19 @@ import sys
 import Game
 import Person
 import cPickle
+import socket
+import json
+
 from Menu import Menu, Text
 
 import reader.form as form
 
 class Main:
     
+
+    
     def __init__(self):
+
         
         # begin main
         pygame.init()
@@ -319,28 +325,72 @@ class Login:
             pygame.display.update()
     
     def showError(self, message):
-        
+            
         self.blitBackgroundLogin()
+        pygame.display.flip()
         
-        y = self.height / 2 + self.gap - 5
-        # blit text
-        Text.blitAvulseText(message, -1, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=50, color=(255, 0, 0))
-        Text.blitAvulseText('Clique para continuar...', -1, y + self.gap / 1.5, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 0, 0))
+        while True:
+            
+            y = self.height / 2 + self.gap - 5
+            # blit text
+            Text.blitAvulseText(message, -1, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=50, color=(255, 0, 0))
+            Text.blitAvulseText('Clique para continuar...', -1, y + self.gap / 1.5, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 0, 0))
+            
+            # draw
+            pygame.display.update()
         
-        # draw
-        pygame.display.update()
+            for e in pygame.event.get():
+                if e.type == MOUSEBUTTONDOWN and e.button == 1:
+                    return 'NEXT'
+        
+        
+def checkLogin(email, senha):
+    
+    try:
+        host = 'localhost'
+        port = 8888
+        size = 1024
+        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn.connect ((host, port))
+        senha = str(senha)
+        data = {"check": True, "email": email, "senha": senha}
+      
+        data = json.dumps(data)
+        
+        conn.sendall (data)
+        
+        data = conn.recv(size)
+        
+        return data
+    except Exception, e:
+        print e
+        return 'Nao foi possivel acessar o servidor'
+    
+    con.close()
+    
         
 if __name__ == '__main__':
     
     main = Main()
     login = Login()
     
-    master_informations = login.run()
-    print master_informations[0]
-    print master_informations[1]
-    
-    "in case of error, please use login.showError(messageError)"
-    
+    while True:
+        master_informations = login.run()
+        print master_informations[0]
+        print master_informations[1]
+        
+        response = checkLogin(master_informations[0], master_informations[1])
+        print response
+        
+        if not response == 'SUCESS':
+            login.showError(response)
+        else:
+            Person.Person.email = master_informations[0]
+            Person.Person.senha = master_informations[1]
+            break
+        
     # make tests
     main.run()
+
+
     

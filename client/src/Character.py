@@ -355,7 +355,7 @@ class Character:
 		
 class Player(Character):
 	
-	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_vamp.png'):
+	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_vamp.png', name=""):
 		
 		Character.__init__(self, (x, y), normal_path, death_blood)
 		
@@ -444,8 +444,8 @@ class Player(Character):
 
 class Bot(Character):
 	
-	def __init__(self, (x, y)=(0, 0), image='../characters/sprites/ordan.png', death_blood='../characters/img/death_blood.png', movement_range=25):
-		
+	def __init__(self, (x, y)=(0, 0), image='../characters/sprites/ordan.png', death_blood='../characters/img/death_blood.png', movement_range=25, name=""):
+		self.name = name
 		Character.__init__(self, (x, y), image, death_blood)
 		
 		# attack control

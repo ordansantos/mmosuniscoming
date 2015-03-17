@@ -14,7 +14,7 @@ class Game:
     
     def __init__(self, screen, width, height, path_image):
         
-        print path_image
+        Person.Person.image =  path_image
         
         self.mouse_pos_right_click = None
         
@@ -146,8 +146,12 @@ class Game:
             
             # handle writer box
             if self.txt.writing_now and self.arrow == [0, 0]:
-                self.txt.handleWriterBox(events)
-            
+                print self.txt.handleWriterBox(events)
+                message = self.txt.handleWriterBox(events)
+                if message != None:
+                    full_nome = unicode('[' + self.p.name + ']: ', 'utf8')
+                    full_message = full_nome + message
+                    self.txt.updateReaderMessage(full_message)
             else:
                 
                 # handle reader box

@@ -9,11 +9,11 @@ class Person:
     person_list = []
     
     @staticmethod
-    def getNewPlayer(x, y, image, id):
+    def getNewPlayer(x, y, image, id, name= ""):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
-        p = Character.Player((x, y), image)
+        p = Character.Player((x, y), image, name=name)
         
         p.setId(id)
 
@@ -22,13 +22,13 @@ class Person:
 
     
     @staticmethod
-    def getNewBot(x, y, image, id):
+    def getNewBot(x, y, image, id, name=""):
         
         
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
-        p = Character.Bot((x, y), image)
+        p = Character.Bot((x, y), image, name=name)
         
         p.setId(id)
 

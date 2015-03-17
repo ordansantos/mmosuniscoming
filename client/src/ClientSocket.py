@@ -7,11 +7,8 @@ import Character
 import threading
 import pygame
 import Queue
-
+import Main
 class ClientSocket:
-    
-
-
     
     def __init__(self):
         
@@ -20,7 +17,14 @@ class ClientSocket:
         self.size = 1024
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect ((self.host, self.port))
-
+        
+        data = {"check": False, "email": Person.Person.email, "senha": Person.Person.senha, "image": Person.Person.image}
+      
+        data = json.dumps(data)
+        
+        self.conn.sendall (data)
+        
+        
         data = self.conn.recv(self.size)
         data = json.loads(data)
         
@@ -93,10 +97,10 @@ class ClientSocket:
             self.addBot(bot)
     
     def addBot(self, bot):
-        Person.Person.getNewBot (bot[1], bot[2], bot[3], bot[0])
+        Person.Person.getNewBot (bot[1], bot[2], bot[3], bot[0], name=bot[4])
     
-    def createMaster(self, (id, x, y, image)):
-        self.master = Person.Person.getNewPlayer(x, y, image, id)
+    def createMaster(self, (id, x, y, image, name)):
+        self.master = Person.Person.getNewPlayer(x, y, image, id, name=name)
         Person.Person.setMaster(self.master.getId())
         
     
@@ -126,7 +130,7 @@ class ClientSocket:
             if p == None: continue
             p.life = life
             
-            print life
+ 
             #if life == 0:
             #    p.dying()
             if p.getPosition() == (x, y):

@@ -10,14 +10,14 @@ import Queue
 import Main
 class ClientSocket:
     
-    def __init__(self):
+    def __init__(self, txt):
         
         self.host = 'localhost'
         self.port = 8888
         self.size = 1024
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect ((self.host, self.port))
-        
+        self.txt = txt
         data = {"check": False, "email": Person.Person.email, "senha": Person.Person.senha, "image": Person.Person.image}
       
         data = json.dumps(data)
@@ -38,25 +38,32 @@ class ClientSocket:
         
         
         self.attack_event = None
+        self.message = None
+        
         self.q_moves = Queue.Queue()
         
         self.close = False
         
     def resetEvents(self):
         self.attack_event = None
-    
+        self.message = None
+        
+        
+        
     def buildEventPackage(self):
         move = None
         
         if (not self.q_moves.empty()):
             move = self.q_moves.get()
             
-        data = {"move": move, "attack": self.attack_event}
+        data = {"move": move, "attack": self.attack_event, "message": self.message}
       
         data = json.dumps(data)
         self.resetEvents()
         return data
     
+    def setMessage(self, message):
+        self.message = message
 
     def setAttack (self, key):
         if self.master.attack_key == Character.Character.NO_ATTACK:
@@ -98,11 +105,11 @@ class ClientSocket:
     
     def addBot(self, bot):
         Person.Person.getNewBot (bot[1], bot[2], bot[3], bot[0], name=bot[4])
-    
+        
     def createMaster(self, (id, x, y, image, name)):
         self.master = Person.Person.getNewPlayer(x, y, image, id, name=name)
         Person.Person.setMaster(self.master.getId())
-        
+        print 'mestre: ', self.master.name
     
     def updateGame(self):
 
@@ -160,6 +167,10 @@ class ClientSocket:
                     self.close = True
                 p.life = 0
                 p.dying()
+                
+            if (event == 'm'):
+                message = e[1]
+                self.txt.updateReaderMessage(message)
                 
 class ClientConnection(threading.Thread):
     

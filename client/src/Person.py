@@ -16,7 +16,7 @@ class Person:
         p = Character.Player((x, y), image, name=name)
         
         p.setId(id)
-
+    
         Person.person_list.append(p)
         return p
 

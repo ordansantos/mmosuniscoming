@@ -2,6 +2,8 @@
 import Queue
 import math
 import pygame
+import Walls
+
 from collections import deque
 
 class PathFind():
@@ -14,21 +16,21 @@ class PathFind():
         
         l  = []
         
-        if Walls.Walls.isFree((x - 1, y)):
+        if not Walls.Walls.isThereWall((x - 1, y)):
             l.append((x - 1, y))   
-        if Walls.Walls.isFree((x + 1, y)):
+        if not Walls.Walls.isThereWall((x + 1, y)):
             l.append((x + 1, y))
-        if Walls.Walls.isFree((x, y - 1)):
+        if not Walls.Walls.isThereWall((x, y - 1)):
             l.append ((x, y - 1))
-        if Walls.Walls.isFree((x, y + 1)):
+        if not Walls.Walls.isThereWall((x, y + 1)):
             l.append ((x, y + 1))
-        if Walls.Walls.isFree((x + 1, y - 1)):
+        if not Walls.Walls.isThereWall((x + 1, y - 1)):
             l.append ((x + 1, y - 1))
-        if Walls.Walls.isFree((x + 1, y + 1)):
+        if not Walls.Walls.isThereWall((x + 1, y + 1)):
             l.append ((x + 1, y + 1))
-        if Walls.Walls.isFree((x - 1, y + 1)):
+        if not Walls.Walls.isThereWall((x - 1, y + 1)):
             l.append ((x - 1, y + 1))
-        if Walls.Walls.isFree((x - 1, y - 1)):
+        if not Walls.Walls.isThereWall((x - 1, y - 1)):
             l.append ((x - 1, y - 1))
 
         return l

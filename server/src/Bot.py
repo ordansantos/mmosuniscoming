@@ -64,7 +64,7 @@ class BotThread(threading.Thread):
                         pygame.time.wait(500)
                         #Person.Person.giveMeHelp(self.p)
                 else:
-                    time_rand = random.randint(3000, 10000)
+                    time_rand = random.randint(10000, 15000)
                     atual = int(round(time.time() * 1000))
                     
                     if (atual - self.last_moved > time_rand):

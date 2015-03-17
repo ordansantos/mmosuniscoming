@@ -126,9 +126,9 @@ class ClientThread(threading.Thread):
             
             while True:
                 
-                if (int(master_banco.killed) !=  int(self.master.all_killed)):
-                    master_banco.killed = str(self.master.all_killed)
-                    database.MasterCRUD.updateMaster(master_banco)
+                #if (int(master_banco.killed) !=  int(self.master.all_killed)):
+                #    master_banco.killed = str(self.master.all_killed)
+                #    database.MasterCRUD.updateMaster(master_banco)
                 
                 self.error = False
                 #print self.master.life
@@ -163,9 +163,11 @@ class ClientThread(threading.Thread):
         
         attack_event = data['attack']
         move_event = data['move']
+        message = data['message']
         
         self.error = self.doClientMovement (move_event)
         self.doClienAttack (attack_event)
+        self.sendMessage (message)
         
     def doClientMovement(self, move_event):
         
@@ -209,4 +211,7 @@ class ClientThread(threading.Thread):
         self.last_event = new_last
         return events
     
+    def sendMessage(self, message):
+        if (message == None): return
+        Client.events.append(('m', message))
     

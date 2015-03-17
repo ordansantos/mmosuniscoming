@@ -115,7 +115,6 @@ class Main:
                         # menus
                         for i in xrange(len(menus)):
                             if menu.isMouseInMenu(i):
-                                print 
                                 return i
         
         # begin run

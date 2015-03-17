@@ -209,7 +209,7 @@ class Player(Character):
 		
 		Character.__init__(self, (x, y), normal_path, death_blood)
 		
-		
+		self.name = name
 		# attack control
 		self.stranger = 25
 		self.all_killed = 0
@@ -311,7 +311,7 @@ class Bot(Character):
 	def __init__(self, (x, y)=(0, 0), image='../characters/sprites/ordan.png', death_blood='../characters/img/death_blood.png', movement_range=25, name=""):
 		
 		Character.__init__(self, (x, y), image, death_blood)
-		
+		self.name = name
 		# attack control
 		self.stranger = 10
 		

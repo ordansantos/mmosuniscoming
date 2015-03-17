@@ -40,7 +40,7 @@ class Game:
         
         self.path_deque = deque()
         
-        self.client = ClientSocket.ClientSocket()
+        self.client = ClientSocket.ClientSocket(self.txt)
         
         thread_client = ClientSocket.ClientConnection(kwargs={'client': self.client})
         thread_client.setDaemon(True)
@@ -59,6 +59,8 @@ class Game:
         died = False
         
         while True:
+
+     
             self.clock.tick(30)
             
             if self.p.life != 0:
@@ -96,7 +98,37 @@ class Game:
                 # move player
                 if (len(self.path_deque)):
                     x1, y1 = self.path_deque.popleft()
-                    self.p.putMove((x1, y1))
+                    x, y = self.p.getPosition()
+                    
+                    if (x1 > x):
+                        if (y1 > y):
+                            if (self.p.downRight()):
+                                self.client.q_moves.put ('dr')
+                        elif (y1 < y):
+                            if (self.p.upRight()):
+                                self.client.q_moves.put ('ur')
+                        else:
+                            if (self.p.right()):
+                                self.client.q_moves.put ('r')
+            
+                    elif (x1 < x):
+                        if (y1 > y):
+                            if (self.p.downLeft()):
+                                self.client.q_moves.put ('dl')
+                        elif (y1 < y):
+                            if (self.p.upLeft()):
+                                self.client.q_moves.put ('ul')
+                        else:
+                            if (self.p.left()):
+                                self.client.q_moves.put ('l')
+            
+                    else:
+                        if (y1 > y):
+                            if (self.p.down()):
+                                self.client.q_moves.put ('d')
+                        elif (y1 < y):
+                            if (self.p.up()):
+                                self.client.q_moves.put ('u')
                 else:
                     #self.p.move(self.arrow)
                     self.client.setMovementEvent(self.arrow)
@@ -148,10 +180,10 @@ class Game:
             if self.txt.writing_now and self.arrow == [0, 0]:
                 message = self.txt.handleWriterBox(events)
                 if message != None:
-                    full_nome = unicode('[' + self.p.name + ']: ', 'utf8')
+                    full_nome = unicode('[' + str(self.p.name) + ']: ', 'utf8')
                     full_message = full_nome + message
-                    self.txt.updateReaderMessage(full_message)
-                
+                    self.client.setMessage(full_message)
+                 
             else:
                 
                 # handle reader box

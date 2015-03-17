@@ -329,10 +329,6 @@ class Login:
         
         while True:
             
-            # close game
-            if pygame.event.peek(pygame.QUIT):
-                return 'QUIT'
-            
             y = self.height / 2 + self.gap - 5
             # blit text
             Text.blitAvulseText(message, -1, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=50, color=(255, 0, 0))
@@ -340,6 +336,11 @@ class Login:
             
             # draw
             pygame.display.update()
+            
+            # close game
+            if pygame.event.peek(pygame.QUIT):
+                pygame.quit()
+                sys.exit()
         
             for e in pygame.event.get():
                 if e.type == MOUSEBUTTONDOWN and e.button == 1:

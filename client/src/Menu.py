@@ -84,6 +84,8 @@ class Menu:
      Seja furtivo! Tome cuidado para não ser pego se alimentando... Se os habitantes da cidade notarem suas ações eles vão ficar irritados com você e provavelmente irão se proteger com ajuda dos amigos...
 
      E lembre-se: O sol está chegando! Sua vida corre perigo!
+     
+     Divirta-se!
 
 INSTRUÇÕES
 
@@ -92,7 +94,24 @@ INSTRUÇÕES
  - Quando estiver em modo supremo, você será capaz de matar os bots com apenas um golpe.
  - Para sair do jogo, pressione ESC a qualquer momento ;)
 
-Divirta-se!
+CRÉDITOS
+
+Projeto desenvolvido para a disciplina de Programação 1 do Curso de Ciência da Computação da UFCG turma 2014.2
+Versão 1.0
+
+Desenvolvedores:
+Ordan Santos
+Eri Jonhson
+
+Professores:
+Dalton Serey
+João Brunet
+Jorge Figueiredo
+
+Monitores:
+Andrey Menezes
+Kláudio Medeiros
+
 """
         
         txt_size = width - int(width / 1.5), height - int(height / 2)

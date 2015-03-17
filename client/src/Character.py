@@ -176,8 +176,9 @@ class Character:
 	def doAMovement(self):
 		x, y = self.getPosition()
 		x1, y1 = self.getMove()
-		#if ((x1, y1) != (x, y) and self != Person.Person.getMaster()):
-		#	print self.id, x1, y1
+		if (math.fabs(x1 - x) > 1 or math.fabs(y1 - y) > 1):
+			self.toPosition(x1, y1)
+			return
 			
 		if (x1 > x):
 			if (y1 > y):

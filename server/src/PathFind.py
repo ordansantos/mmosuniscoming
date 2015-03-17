@@ -13,6 +13,7 @@ class PathFind():
     @staticmethod
     def neighbors((x, y)):
         
+        
         l  = []
         
         if Walls.Walls.isFree((x - 1, y)):

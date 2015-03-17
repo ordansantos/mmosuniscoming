@@ -14,31 +14,16 @@ Walls.Walls.pushWalls(tile_map)
 
 #Criando bots
 
-Bot.BotController.putNewBot ((170, 350), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((180, 350), '../characters/sprites/blond_man.png')
-Bot.BotController.putNewBot ((200, 350), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((160, 350), '../characters/sprites/blond_man.png')
-Bot.BotController.putNewBot ((250, 240), '../characters/sprites/pink_woman.png')
-Bot.BotController.putNewBot ((130, 240), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((364, 100), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((209, 538), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((52, 536), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((230, 802), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((456, 1420), '../characters/sprites/black_man.png')
-Bot.BotController.putNewBot ((410, 1305), '../characters/sprites/black_man.png')
+Bot.BotController.putNewBot ((912, 482), '../characters/sprites/black_man.png')
 
-'''
-'../characters/sprites/black_man.png'
-'../characters/sprites/blond_man.png'
-'../characters/sprites/blond_woman.png'
-'../characters/sprites/brunette_woman.png'
-'../characters/sprites/daenerys.png'
-'../characters/sprites/dumb_blond.png'
-'../characters/sprites/mohican_man_brunette.png'
-'../characters/sprites/mohican_man_brunette.png'
-'../characters/sprites/mohican_man.png'
-'../characters/sprites/pink_woman.png'
-'''
+Bot.BotController.putNewBot ((739, 498), '../characters/sprites/blond_man.png')
+Bot.BotController.putNewBot ((935, 602),  '../characters/sprites/dumb_woman.png')
+Bot.BotController.putNewBot ((981, 633), '../characters/sprites/blond_man.png')
+Bot.BotController.putNewBot ((975, 597), '../characters/sprites/blond_woman.png')
+Bot.BotController.putNewBot ((1029, 622), '../characters/sprites/brunette_woman.png')
+
+
+
 
 server = Server.Server()
 

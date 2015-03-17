@@ -126,9 +126,9 @@ class ClientThread(threading.Thread):
             
             while True:
                 
-                #if (int(master_banco.killed) !=  int(self.master.all_killed)):
-                #    master_banco.killed = str(self.master.all_killed)
-                #    database.MasterCRUD.updateMaster(master_banco)
+                if (int(master_banco.killed) !=  int(self.master.all_killed) and int(self.master.all_killed) < 4):
+                    master_banco.killed = str(self.master.all_killed)
+                    database.MasterCRUD.updateMaster(master_banco)
                 
                 self.error = False
                 #print self.master.life
@@ -153,7 +153,7 @@ class ClientThread(threading.Thread):
                     print 'fim da conexao com o cliente'
                     break """
         except Exception, e:
-            #print "Exception wile receiving message: ", e
+            print "Exception wile receiving message: ", e
             self.conn.close()
             self.master.dead()
             Client.events.append(('d', self.master.getId()))

@@ -26,6 +26,7 @@ class Server:
     
         self.socket.listen(10)
         
+        
         print 'Servidor iniciado com sucesso!'
     
     def start(self):

@@ -9,6 +9,7 @@ import Person
 import TextBox
 import math
 import Walls
+import Queue
 
 import sys, os, traceback
 if sys.platform in ["win32", "win64"]: os.environ["SDL_VIDEO_CENTERED"] = "1"
@@ -208,7 +209,10 @@ class Screen:
         person_list = Person.Person.getPersons()
         
         for p in person_list:
-            if (not self.personIsOnScreen(master, p)): continue
+            if (not self.personIsOnScreen(master, p)): 
+                p.queue_moves = Queue.Queue()
+                p.stopped
+                continue
       
             x, y = self.getRealPosition(p.getPosition())
             # has free legs?

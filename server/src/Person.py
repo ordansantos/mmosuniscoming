@@ -44,7 +44,7 @@ class Person:
         p.setId(Person.getIdGlobal())
         if (Walls.Walls.pushPerson(x, y, p)):
             Person.person_list.append(p)
-
+            print 'criou', p.getId()
             return p
 
         return None

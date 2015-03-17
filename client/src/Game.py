@@ -216,8 +216,8 @@ class Game:
                     if e.key in self.p.attack_keys.keys():
                         #self.p.attack(e.key)
                         self.client.setAttack(e.key)
-                    if e.key == K_LSHIFT:
-                        self.p.updateSpeed(True)
+                    #if e.key == K_LSHIFT:
+                    #    self.p.updateSpeed(True)
         
         return 'NEXT'
     

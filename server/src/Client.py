@@ -58,7 +58,7 @@ class Client:
     @staticmethod
     def getNewPlayer(image, name):
         
-        x, y = 150, 350
+        x, y = 733, 896
         
         while not Walls.Walls.isFree((x, y)):
             x += 1

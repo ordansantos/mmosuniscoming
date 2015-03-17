@@ -129,6 +129,9 @@ class Screen:
             
             img_life = person.getLifeBar()
             self.frame.blit(img_life, (-16 + x, -60 + y))
+            
+            img_name = person.getNamePicture()
+            self.frame.blit(img_name, (- int(img_name.get_width() / 2) + x, -75 + y))
     
     def blitPerson(self, master, person):
         if (master == person):

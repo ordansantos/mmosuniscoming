@@ -146,12 +146,12 @@ class Game:
             
             # handle writer box
             if self.txt.writing_now and self.arrow == [0, 0]:
-                print self.txt.handleWriterBox(events)
                 message = self.txt.handleWriterBox(events)
                 if message != None:
                     full_nome = unicode('[' + self.p.name + ']: ', 'utf8')
                     full_message = full_nome + message
                     self.txt.updateReaderMessage(full_message)
+                
             else:
                 
                 # handle reader box

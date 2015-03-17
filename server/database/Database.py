@@ -11,7 +11,7 @@ class DAO:
     
     config = {
         'user': 'root',
-        'password': '',
+        'password': 'ifpbinfo',
         'host': '127.0.0.1',
         'database': 'suniscoming'
     }

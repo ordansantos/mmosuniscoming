@@ -201,9 +201,8 @@ class Reader(pygame.Rect,object):
     
     def updateText(self, text):
         try:
-            text = str(text)
+            text = text.expandtabs(4).split('\n')
             tam = len(self._original)
-            text = unicode(text.expandtabs(4),'utf8').split('\n')
             if tam + len(text) > 500:
                 self._original = self._original[300:tam-1]
             self._original += text

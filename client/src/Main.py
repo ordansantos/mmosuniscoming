@@ -320,6 +320,7 @@ class Login:
             self.writer_email.show()
             self.false_pass.show()
             self._src.blit(self.button, self.button_pos)
+            Text.blitAvulseText('Cadastre-se em http://suniscoming.ddns.net/', -1, y + self.gap * 1.5, font='../reader/MonospaceTypewriter.ttf', font_size=20, color=(255, 0, 0))
             
             # draw
             pygame.display.update()

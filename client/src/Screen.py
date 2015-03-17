@@ -151,7 +151,10 @@ class Screen:
                 self.frame.blit(img_squirt, (x + 8, y + 8))
                 
             img_name = person.getNamePicture()
-            self.frame.blit(img_name, (img_name.get_width() / 2 - 1.5 + x, y - 12))
+            gap = img_name.get_width() - 64
+            if gap >= 0: name_x = x - int(gap / 2)
+            else: name_x = x + int(gap / 2)
+            self.frame.blit(img_name, (name_x, y - 12))
     
     def renderTilesToScreen(self, master):
         

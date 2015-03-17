@@ -20,7 +20,7 @@ class Character:
 		self.setPosition((x, y))
 		self.initial_position = (x, y)
 		self.id = 0
-		self.name = 'Ordan'
+		self.name = 'Eri Jonhson'
 		self.life = 100
 		# speed
 		self.px = 1

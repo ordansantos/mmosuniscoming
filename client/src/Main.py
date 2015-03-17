@@ -16,10 +16,7 @@ import reader.form as form
 
 class Main:
     
-
-    
     def __init__(self):
-
         
         # begin main
         pygame.init()
@@ -332,6 +329,10 @@ class Login:
         
         while True:
             
+            # close game
+            if pygame.event.peek(pygame.QUIT):
+                return 'QUIT'
+            
             y = self.height / 2 + self.gap - 5
             # blit text
             Text.blitAvulseText(message, -1, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=50, color=(255, 0, 0))
@@ -365,7 +366,7 @@ def checkLogin(email, senha):
         return data
     except Exception, e:
         print e
-        return 'Nao foi possivel acessar o servidor'
+        return 'Servidor inativo'
     
     con.close()
     
@@ -376,7 +377,13 @@ if __name__ == '__main__':
     login = Login()
     
     while True:
+        
         master_informations = login.run()
+        
+        if master_informations == 'QUIT':
+            pygame.quit()
+            sys.exit()
+        
         print master_informations[0]
         print master_informations[1]
         

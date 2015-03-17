@@ -168,9 +168,9 @@ Divirta-se!
         sprites = [[None for j in xrange(2)] for i in xrange(4)]
         
         sprites[0][0] = ('../characters/sprites/ordan.png')
-        sprites[1][0] = ('../characters/sprites/pink_woman.png')
-        sprites[2][0] = ('../characters/sprites/black_man.png')
-        sprites[3][0] = ('../characters/sprites/blond_woman.png')
+        sprites[1][0] = ('../characters/sprites/daenerys.png')
+        sprites[2][0] = ('../characters/sprites/playboy.png')
+        sprites[3][0] = ('../characters/sprites/dumb_woman.png')
         
         size_sprite = int(height / 4), int(height / 4)
         for i in xrange(len(sprites)):

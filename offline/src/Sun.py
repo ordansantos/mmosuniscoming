@@ -3,8 +3,8 @@ import pygame
 
 class Sun:
     
-    # 2,5 minutes = 150000
-    PERIOD = 15000
+    # 1 minutes = 60000
+    PERIOD = 6000
     MAX = 256
     MIN = 80
 

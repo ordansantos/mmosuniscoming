@@ -40,18 +40,15 @@ class Game:
         
         self.path_deque = deque()
         
-        self.client = ClientSocket.ClientSocket(self.txt)
+        self.client = ClientSocket.ClientSocket(self.txt, self.sun)
         
-        thread_client = ClientSocket.ClientConnection(kwargs={'client': self.client})
+        thread_client = ClientSocket.ClientConnection(kwargs={'client': self.client, 'sun': self.sun})
         thread_client.setDaemon(True)
         thread_client.start()
-
         
         self.p = Person.Person.getMaster()
 
     def run(self):
-        
-        
         
         pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         
@@ -59,26 +56,26 @@ class Game:
         died = False
         
         while True:
-
      
             self.clock.tick(30)
             
             if self.p.life != 0:
+                
+                pygame.event.pump()
             
                 # handle events
                 switch = self.doEvent()
                 
-                pygame.event.pump()
-                
                 if switch == 'ESCAPE':
                     self.sound.stopAll()
                     self.client.close = True
-                    
                     return 'ESCAPE'
+                
                 elif switch == 'QUIT':
-                    self.sound.stopAll()
+                    # self.sound.stopAll()
                     self.client.close = True
-                    return 'QUIT'
+                    pygame.quit()
+                    sys.exit()
                 
                 # update title
                 pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
@@ -89,7 +86,7 @@ class Game:
                 # update player
                 #print self.p.id
                 
-                self.p.updateDeath(self.sun.getPeriod())
+                # self.p.updateDeath(self.sun.getPeriod())
                 transform = self.p.updateTransform()
                 
                 # update sound

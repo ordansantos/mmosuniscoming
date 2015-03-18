@@ -27,9 +27,6 @@ class Main:
         
         pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         
-        self.master_name = 'Ordan Santos'
-        self.master_image = '../characters/sprites/ordan.png'
-        
         self.clock = pygame.time.Clock()
 
     @staticmethod
@@ -37,7 +34,7 @@ class Main:
         height = pygame.display.get_surface().get_height()
         Text.blitAvulseText('Sun is coming', -1, int(height/8), font='../tiles/menu/fonts/Toxia_FRE.ttf', font_size=int(height/5), color=(255, 0, 0))
 
-    def run(self):
+    def run(self, name_master):
         
         def selectMenu():
             
@@ -136,19 +133,23 @@ class Main:
             
             if op == 0:
                 Person.Person.restartPerson()
+                path_image = Menu.selectCharacter(width, height)
                 Menu.loading(width, height)
-                game = Game.Game(self.screen, width, height, self.master_name, self.master_image)
+                game = Game.Game(self.screen, width, height, name_master, path_image)
                 switch = game.run()
                 if switch == 'QUIT':
-                    return 'QUIT'
+                    pygame.quit()
+                    sys.exit()
             
             elif op == 1:
                 switch = Menu.about(width, height)
                 if switch[0] == 'QUIT':
-                    return 'QUIT'
+                    pygame.quit()
+                    sys.exit()
             
             elif op == 2:
-                return 'QUIT'
+                pygame.quit()
+                sys.exit()
 
 class Login:
     
@@ -158,7 +159,6 @@ class Login:
         self.height = self._src.get_height()
         
         self.email = None
-        self.password = None
         
         self.gap = self.width / 8
         lenfont = 20
@@ -169,33 +169,19 @@ class Login:
         self.writer_email = form.Form(self.emailbox_pos, self.emailbox_width, lenfont, self.emailbox_height, bg=(255,255,255), fgcolor=(0,0,0), hlcolor=(250,190,150,50), curscolor=(0,255,0))
         self.writer_email_now = False
         
-        # passbox
-        self.passbox_width, self.passbox_height = self.emailbox_width, self.emailbox_height
-        self.passbox_pos = self.emailbox_pos[0], self.emailbox_pos[1] + self.gap / 3
-        self.writer_pass = form.Form(self.passbox_pos, self.passbox_width, lenfont, self.passbox_height, bg=(255,255,255), fgcolor=(0,0,0), hlcolor=(250,190,150,50), curscolor=(0,255,0))
-        self.writer_pass_now = False
-        self.false_pass = form.Form(self.passbox_pos, self.passbox_width, lenfont, self.passbox_height, bg=(255,255,255), fgcolor=(0,0,0), hlcolor=(250,190,150,50), curscolor=(0,255,0))
-        
         # reset writerboxes
         self.writer_email.setBlanckMessage()
-        self.writer_pass.setBlanckMessage()
-        self.false_pass.setBlanckMessage()
         
         # button
-        self.button_white = Text.blitAvulseText('ENTRAR', -1, self.passbox_height + self.gap, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=int(self.height/20), color=(255, 255, 255))
-        self.button_red = Text.blitAvulseText('ENTRAR', -1, self.passbox_height + self.gap, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=int(self.height/20), color=(255, 0, 0))
+        self.button_white = Text.blitAvulseText('ENTRAR', -1, self.emailbox_height + self.gap, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=int(self.height/20), color=(255, 255, 255))
+        self.button_red = Text.blitAvulseText('ENTRAR', -1, self.emailbox_height + self.gap, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=int(self.height/20), color=(255, 0, 0))
         self.button = self.button_white
-        self.button_pos = self.width / 2 - self.button.get_width() / 2, self.passbox_pos[1] + self.passbox_height + self.gap / 4
+        self.button_pos = self.width / 2 - self.button.get_width() / 2, self.emailbox_pos[1] + self.emailbox_height + self.gap / 4
         
         self.clock = pygame.time.Clock()
     
     def onWriterEmail(self, mouse_pos):
         if mouse_pos[0] >= self.emailbox_pos[0] and mouse_pos[1] >= self.emailbox_pos[1] and mouse_pos[0] < self.emailbox_pos[0] + self.emailbox_width and mouse_pos[1] < self.emailbox_pos[1] + self.emailbox_height:
-            return True
-        return False
-    
-    def onWriterPass(self, mouse_pos):
-        if mouse_pos[0] >= self.passbox_pos[0] and mouse_pos[1] >= self.passbox_pos[1] and mouse_pos[0] < self.passbox_pos[0] + self.passbox_width and mouse_pos[1] < self.passbox_pos[1] + self.passbox_height:
             return True
         return False
     
@@ -210,27 +196,9 @@ class Login:
                 if e.key == pygame.K_TAB:
                     self.email = self.writer_email.OUTPUT
                     self.writer_email_now = False
-                    self.writer_pass_now = True
                     return
                 elif e.key != pygame.K_RETURN and e.key != pygame.K_KP_ENTER and e.key != pygame.K_SPACE:
                     self.writer_email.update(e)
-                    pygame.time.delay(50)
-    
-    def handleWriterPass(self, events):
-        for e in events:
-            if e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_TAB:
-                    self.email = self.writer_pass.OUTPUT
-                    self.writer_pass_now = False
-                    self.button = self.button_red
-                    return
-                elif e.key != pygame.K_RETURN and e.key != pygame.K_KP_ENTER and e.key != pygame.K_SPACE:
-                    self.writer_pass.update(e)
-                    # this is where the magic happens
-                    s = ''
-                    for i in xrange(len(self.writer_pass.OUTPUT)):
-                        s += '*'
-                    self.false_pass._splitted = [s]
                     pygame.time.delay(50)
     
     def run(self):
@@ -250,8 +218,7 @@ class Login:
         
         x = self.width / 2 - (self.width - self.gap * 2) / 2
         y = self.height / 2 + self.gap - 5
-        Text.blitAvulseText('E-mail: ', x, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 255, 255))
-        Text.blitAvulseText('Senha: ', x, y + self.gap / 3, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 255, 255))
+        Text.blitAvulseText('Nome: ', x, y, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=20, color=(255, 255, 255))
         
         # draw
         pygame.display.flip()
@@ -286,32 +253,20 @@ class Login:
                     if self.onWriterEmail(mouse_pos):
                         self.writer_email.setBlanckMessage()
                         self.writer_email_now = True
-                        self.writer_pass_now = False
-                    elif self.onWriterPass(mouse_pos):
-                        self.writer_pass.setBlanckMessage()
-                        self.false_pass.setBlanckMessage()
-                        self.writer_pass_now = True
-                        self.writer_email_now = False
                     elif self.onButton(mouse_pos):
                         self.email = self.writer_email.OUTPUT
-                        self.password = self.writer_pass.OUTPUT
-                        return self.email, self.password
+                        return self.email
                     else: # if clicked out...
                         self.email = self.writer_email.OUTPUT
-                        self.password = self.writer_pass.OUTPUT
                         self.writer_email_now = False
-                        self.writer_pass_now = False
                         self.button = self.button_white
                 
                 # writer
                 if self.writer_email_now:
                     self.handleWriterEmail(events)
-                elif self.writer_pass_now:
-                    self.handleWriterPass(events)
             
             # blit
             self.writer_email.show()
-            self.false_pass.show()
             self._src.blit(self.button, self.button_pos)
             
             # draw
@@ -323,9 +278,7 @@ if __name__ == '__main__':
     login = Login()
     
     master_informations = login.run()
-    print master_informations[0]
-    print master_informations[1]
+    print master_informations
     
-    # make tests
-    main.run()
+    main.run(master_informations)
     

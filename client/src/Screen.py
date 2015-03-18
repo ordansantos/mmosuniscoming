@@ -153,8 +153,8 @@ class Screen:
                 
             img_name = person.getNamePicture()
             gap = img_name.get_width() - 64
-            if gap >= 0: name_x = x - int(gap / 2)
-            else: name_x = x + int(gap / 2)
+            if gap >= 0: name_x = x - (gap / 2)
+            else: name_x = x + (-gap / 2)
             self.frame.blit(img_name, (name_x, y - 12))
     
     def renderTilesToScreen(self, master):
@@ -265,7 +265,7 @@ class Screen:
         if sun.gray < 160:
             pos = self.shad.get_center_position(self.frame_width / 2, self.frame_height / 2 - 16)
             self.surf_lighting.blit(self.mask, pos, special_flags=BLEND_MAX)
-        self.frame.blit(self.surf_lighting, (0, 0), special_flags=BLEND_MULT)
+        self.screen.blit(self.surf_lighting, (0, 0), special_flags=BLEND_MULT)
                 
     def getMousePositionOnMap(self, master, mouse_position):
         mouse_x, mouse_y = mouse_position

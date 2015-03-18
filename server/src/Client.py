@@ -17,9 +17,9 @@ class Client:
     events = []
     
     @staticmethod
-    def addNewClient (conn):
+    def addNewClient (conn, sun):
         
-        client_thread = ClientThread(kwargs={'conn': conn})
+        client_thread = ClientThread(kwargs={'conn': conn, 'sun': sun})
         client_thread.setDaemon(True)
         client_thread.start()
     
@@ -91,6 +91,7 @@ class ClientThread(threading.Thread):
     def run(self):
 
         self.conn = self._Thread__kwargs['conn']
+        self.sun = self._Thread__kwargs['sun']
         
         data = self.conn.recv(1024)
         
@@ -130,6 +131,8 @@ class ClientThread(threading.Thread):
                     master_banco.killed = str(self.master.all_killed)
                     database.MasterCRUD.updateMaster(master_banco)
                 
+                self.master.updateDeath(self.sun.getPeriod())
+                
                 self.error = False
                 #print self.master.life
                 data = self.conn.recv(1024)
@@ -139,7 +142,7 @@ class ClientThread(threading.Thread):
                 if (self.master.life == 0):
                     Client.events.append(('d', self.master.getId()))
                 
-                data = {"moves": Client.getPackage(), "events": self.getServerEvents(), "error": self.error}
+                data = {"moves": Client.getPackage(), "events": self.getServerEvents(), "error": self.error, "sun": self.sun.getGray()}
                 
                 data_string = json.dumps(data)
                 self.conn.sendall(data_string)
@@ -152,6 +155,7 @@ class ClientThread(threading.Thread):
                     self.master.dead()
                     print 'fim da conexao com o cliente'
                     break """
+        
         except Exception, e:
             print "Exception wile receiving message: ", e
             self.conn.close()
@@ -204,7 +208,7 @@ class ClientThread(threading.Thread):
         if attack_event != None:
             self.master.attack(attack_event)
             Client.events.append(('a', self.master.getId(), attack_event))
-            
+    
     def getServerEvents(self):
         new_last = len(Client.events)
         events = Client.events[self.last_event:new_last]

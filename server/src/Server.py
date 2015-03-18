@@ -5,11 +5,12 @@ import sys
 from thread import *
 import json
 import Client
-
+from Sun import Sun
 
 class Server:
     
     def __init__(self):
+        
         print 'Iniciando servidor: '
         self.HOST = ''
         self.PORT = 8888
@@ -26,6 +27,7 @@ class Server:
     
         self.socket.listen(10)
         
+        self.sun = Sun()
         
         print 'Servidor iniciado com sucesso!'
     
@@ -36,6 +38,6 @@ class Server:
         while True:
             conn, addr = self.socket.accept()
             print 'Conectado com:  ' + addr[0] + ':' + str(addr[1])
-            Client.Client.addNewClient(conn)
+            Client.Client.addNewClient(conn, self.sun)
 
         self.socket.close()

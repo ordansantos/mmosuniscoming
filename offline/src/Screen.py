@@ -7,7 +7,6 @@ import pytmx
 from pytmx.util_pygame import load_pygame
 import Walls
 import Person
-import GameTextBox
 import math
 
 import sys, os, traceback
@@ -55,9 +54,6 @@ class Screen:
         self.mask = self.shad.get_mask()
         self.mask.blit(self.surf_falloff, (0, 0), special_flags=BLEND_MULT)
         
-        # textbox
-        self.txt = GameTextBox.GameTextBox(self.screen_width, self.screen_height)
-        
         # lifebar
         self.life = Header()
         
@@ -71,7 +67,6 @@ class Screen:
         self.screen.blit(surf, (0,0))
         
         self.blitShadow(sun)
-        self.txt.drawTextBox()
         self.life.blitLifeBar(master.life)
         
         pygame.display.flip()
@@ -253,7 +248,7 @@ class Screen:
         if sun.gray < 160:
             pos = self.shad.get_center_position(self.frame_width / 2, self.frame_height / 2 - 16)
             self.surf_lighting.blit(self.mask, pos, special_flags=BLEND_MAX)
-        self.frame.blit(self.surf_lighting, (0, 0), special_flags=BLEND_MULT)
+        self.screen.blit(self.surf_lighting, (0, 0), special_flags=BLEND_MULT)
                 
     def getMousePositionOnMap(self, master, mouse_position):
         

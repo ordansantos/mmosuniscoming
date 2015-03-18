@@ -56,16 +56,114 @@ class Menu:
         pygame.display.flip()
     
     @staticmethod
-    def options(width, height):
-        
+    def about(width, height):
+
         frame = pygame.display.get_surface()
         
-        # functions
         def _back(mouse_pos):
             if (mouse_pos[0] > (back_pos[0])) and (mouse_pos[1] > (back_pos[1])) and (mouse_pos[0] < (back_pos[0] + back.get_width()) and (mouse_pos[1]) < (back_pos[1] + back.get_height())):
                 return True
             return False
         
+        # background
+        background = pygame.image.load('../tiles/menu/img/chained.png').convert()
+        size = Menu.getSizeByHeight(height, background.get_width(), background.get_height())
+        #op_size = Menu.getSizeByWidth(width, background.get_width(), background.get_height())
+        background = pygame.transform.scale(background, size).convert()
+        
+        # blit background
+        frame.fill((0, 0, 0))
+        frame.blit(background, (int(width / 2) - int(size[0] / 2), int(height / 2) - int(size[1] / 2)))
+        
+        text = """SOBRE O SUN IS COMING
+
+     Bem vindo ao Sun is coming, jogo multiplayer online de mundo aberto.
+
+     Aqui você desempenha papel de um vampiro que deve lutar para sobreviver. Sua tarefa é capturar sangue de qualquer personagem para que sua vida não acabe.
+
+     Seja furtivo! Tome cuidado para não ser pego se alimentando... Se os habitantes da cidade notarem suas ações eles vão ficar irritados com você e provavelmente irão se proteger com ajuda dos amigos...
+
+     E lembre-se: O sol está chegando! Sua vida corre perigo!
+     
+     Divirta-se!
+
+INSTRUÇÕES
+
+ - Você pode mover o personagem nas setas ou clicando com o botão direito do mouse.
+ - Use espaço para atacar.
+ - Quando estiver em modo supremo, você será capaz de matar os bots com apenas um golpe.
+ - Para sair do jogo, pressione ESC a qualquer momento ;)
+
+CRÉDITOS
+
+Projeto desenvolvido para a disciplina de Programação 1 do Curso de Ciência da Computação da UFCG turma 2014.2
+Versão 1.0
+
+Desenvolvedores:
+Ordan Santos
+Eri Jonhson
+
+Professores:
+Dalton Serey
+João Brunet
+Jorge Figueiredo
+
+Monitores:
+Andrey Menezes
+Kláudio Medeiros
+
+"""
+        
+        txt_size = width - int(width / 1.5), height - int(height / 2)
+        txt = reader.Reader(unicode(text, 'utf8'), (width / 2 - txt_size[0] / 2, height / 2 - txt_size[1] / 2), txt_size[1], height / 45, txt_size[1], font=os.path.join('../reader', 'MonospaceTypewriter.ttf'), fgcolor=(255, 255, 255), hlcolor=(250, 190, 150, 50), split=True)
+        pygame.display.flip()
+        
+        back = pygame.image.load('../tiles/menu/img/back.png').convert()
+        
+        while True:
+
+            # back
+            back_size = Menu.getSizeByHeight(int(width / 15), back.get_width(), back.get_height())
+            back = pygame.transform.scale(back, back_size).convert_alpha()
+            back_pos = back.get_width() * 0.5, height - back.get_height() * 1.5
+            
+            # blit buttons screen
+            frame.blit(back, back_pos)
+            
+            txt.show()
+            
+            pygame.display.update()
+            
+            # close game
+            if pygame.event.peek(pygame.QUIT):
+                return 'QUIT'
+            
+            for e in pygame.event.get():
+                
+                mouse_pos = pygame.mouse.get_pos()
+
+                if _back(mouse_pos):
+                    back = pygame.image.load('../tiles/menu/img/back_red.png').convert_alpha()
+                else:
+                    back = pygame.image.load('../tiles/menu/img/back.png').convert_alpha()
+                
+                # scroll
+                if (e.type == pygame.MOUSEBUTTONDOWN or e.type == pygame.MOUSEBUTTONUP) and (e.button == 4 or e.button == 5):
+                    txt.update(e)
+                
+                # button clicked
+                if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+                    if _back(mouse_pos):
+                        return 'NEXT'
+
+    @staticmethod
+    def selectCharacter(width, height):
+        
+        from Main import Main
+        
+        frame = pygame.display.get_surface()
+        
+        # functions
         def _right_arrow(mouse_pos):
             if (mouse_pos[0] > (right_arrow_pos[0])) and (mouse_pos[1] > (right_arrow_pos[1])) and (mouse_pos[0] < (right_arrow_pos[0] + right_arrow.get_width()) and (mouse_pos[1]) < (right_arrow_pos[1] + right_arrow.get_height())):
                 return True
@@ -76,7 +174,11 @@ class Menu:
                 return True
             return False
         
-        back = pygame.image.load('../tiles/menu/img/back.png').convert()
+        def onButton(mouse_pos):
+            if mouse_pos[0] >= button_pos[0] and mouse_pos[1] >= button_pos[1] and mouse_pos[0] < button_pos[0] + button.get_width() and mouse_pos[1] < button_pos[1] + button.get_height():
+                return True
+            return False
+        
         right_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
         right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
         left_arrow = pygame.image.load('../tiles/menu/img/arrow_white.png').convert_alpha()
@@ -85,9 +187,9 @@ class Menu:
         sprites = [[None for j in xrange(2)] for i in xrange(4)]
         
         sprites[0][0] = ('../characters/sprites/ordan.png')
-        sprites[1][0] = ('../characters/sprites/pink_woman.png')
-        sprites[2][0] = ('../characters/sprites/black_man.png')
-        sprites[3][0] = ('../characters/sprites/blond_woman.png')
+        sprites[1][0] = ('../characters/sprites/daenerys.png')
+        sprites[2][0] = ('../characters/sprites/playboy.png')
+        sprites[3][0] = ('../characters/sprites/dumb_woman.png')
         
         size_sprite = int(height / 4), int(height / 4)
         for i in xrange(len(sprites)):
@@ -96,6 +198,12 @@ class Menu:
             sprites[i][1] = pygame.transform.scale(sprites[i][j], size_sprite)
         
         master = 0
+        
+        # button
+        button_white = Text.blitAvulseText('INICIAR', -1, -1, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=int(height/20), color=(255, 255, 255))
+        button_red = Text.blitAvulseText('INICIAR', -1, -1, font='../tiles/menu/fonts/Purisa-Bold.ttf', font_size=int(height/20), color=(255, 0, 0))
+        button = button_white
+        button_pos = width / 2 - button.get_width() / 2, height / 2 + size_sprite[1] * 0.8
         
         while True:
             
@@ -107,35 +215,33 @@ class Menu:
             
             # blit options
             frame.fill((0, 0, 0))
-            frame.blit(options_background, (int(width / 2) - int(op_size[0] / 2), int(height / 2) - int(op_size[1] / 2)))
+            #frame.blit(options_background, (int(width / 2) - int(op_size[0] / 2), int(height / 2) - int(op_size[1] / 2)))
             
-            # buttons
-    
-            # back
-            back_size = Menu.getSizeByHeight(int(width / 15), back.get_width(), back.get_height())
-            back = pygame.transform.scale(back, back_size).convert_alpha()
-            back_pos = back.get_width() * 0.5, height - back.get_height() * 1.5
-            
-            # blit buttons screen
-            frame.blit(back, back_pos)
-            
-            # character
-            character_pos = int(width / 10), int(height / 2)
+            # Character
+            character_pos = width / 2 - size_sprite[0] / 2, height / 2 - size_sprite[1] / 2
             frame.blit(sprites[master][1], character_pos)
             
-            left_arrow_pos = character_pos[0] - int(width / 20), character_pos[1] + int(character_pos[1] / 4)
-            right_arrow_pos = character_pos[0] + size_sprite[0], character_pos[1] + int(character_pos[1] / 4)
+            # resize
             size_arrow = size_sprite[0] / 5, size_sprite[1] / 5
             right_arrow = pygame.transform.scale(right_arrow, size_arrow).convert_alpha()
             left_arrow = pygame.transform.scale(left_arrow, size_arrow).convert_alpha()
             
+            # define place arrows
+            left_arrow_pos = character_pos[0] - size_arrow[0], character_pos[1] * 1.5 - size_arrow[1]
+            right_arrow_pos = character_pos[0] + size_sprite[0], character_pos[1] * 1.5 - size_arrow[1]
+            
+            # blit arrows            
             frame.blit(right_arrow, right_arrow_pos)
             frame.blit(left_arrow, left_arrow_pos)
             
+            # game name
+            Main.blitGameName()
+            
+            # blit button
+            frame.blit(button, button_pos)
+            
             # draw
             pygame.display.flip()
-            
-            # choose
             
             # close game
             if pygame.event.peek(pygame.QUIT):
@@ -145,10 +251,11 @@ class Menu:
                 
                 mouse_pos = pygame.mouse.get_pos()
                 
-                if _back(mouse_pos):
-                    back = pygame.image.load('../tiles/menu/img/back_red.png').convert_alpha()
+                # mousemotion
+                if onButton(mouse_pos):
+                    button = button_red
                 else:
-                    back = pygame.image.load('../tiles/menu/img/back.png').convert_alpha()
+                    button = button_white
                 
                 if _right_arrow(mouse_pos):
                     right_arrow = pygame.image.load('../tiles/menu/img/arrow_red.png').convert_alpha()
@@ -164,8 +271,6 @@ class Menu:
                 
                 # button clicked
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-                    if _back(mouse_pos):
-                        return ['MASTER', sprites[master][0]]
                     # character
                     if _right_arrow(mouse_pos):
                         master += 1
@@ -175,44 +280,8 @@ class Menu:
                         master -= 1
                         if master < 0:
                             master = 3
-                    
-    @staticmethod
-    def about(width, height):
-        
-        frame = pygame.display.get_surface()
-        frame.fill((0, 0, 0))
-        text = """-- ENREDO --
-
-Este é um jogo de mundo aberto.
-O personagem principal é um vampiro que luta para sobreviver na era medieval.
-A tarefa do jogador é não deixar seu personagem morrer (acabar seu sangue). 
-Para tanto é necessário se alimentar dos habitantes da vila. 
-
-Misturando o gênero de ação furtiva, o jogador deve tomar cuidado para não ser pego se alimentando nem muito menos transformado.
-O sol é um dos principais inimigos.
-
--- INSTRUÇÕES --
-
-Você pode mover o personagem nas setas ou clicando no botão direito do mouse.
-Quando estiver em modo supremo, você será capaz de matar os bots com apenas um golpe.
-Para sair do jogo, pressione ESC a qualquer momento ;)
-
-Divirta-se!
-
-Clique para voltar"""
-
-        txt = reader.Reader(unicode(text, 'utf8'), (int(width / 30), int(width / 30)), width - int(width / 30), 15, height - int(width / 30), font=os.path.join('../reader', 'MonospaceTypewriter.ttf'), fgcolor=(255, 255, 255), hlcolor=(250, 190, 150, 50), split=True)
-        txt.show()
-        pygame.display.flip()
-        
-        while True:
-            # close game
-            if pygame.event.peek(pygame.QUIT):
-                return 'QUIT'
-            
-            for e in pygame.event.get():
-                if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-                    return 'NEXT'
+                    elif onButton(mouse_pos):
+                        return sprites[master][0]
 
 class Text:
     

@@ -21,7 +21,6 @@ class Game:
 
         self.clock = pygame.time.Clock()
         self.frame = Screen.Screen(screen, width, height)
-        self.txt = self.frame.txt
         
         self.sound = Sound.Sound()
         
@@ -52,8 +51,6 @@ class Game:
     
         # Bot.BotController.putNewBot((600, 800))
         # Bot.BotController.putNewBot((1000, 2000))
-        
-        """ self.client = ClientSocket.ClientSocket() """
     
     def run(self):
         
@@ -67,18 +64,19 @@ class Game:
             self.clock.tick(30)
             
             if self.p.life != 0:
+                
+                pygame.event.pump()
             
                 # handle events
                 switch = self.doEvent()
-                
-                pygame.event.pump()
                 
                 if switch == 'ESCAPE':
                     self.sound.stopAll()
                     return 'ESCAPE'
                 elif switch == 'QUIT':
-                    self.sound.stopAll()
-                    return 'QUIT'
+                    # self.sound.stopAll()
+                    pygame.quit()
+                    sys.exit()
                 
                 # update title
                 pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
@@ -103,7 +101,6 @@ class Game:
             else: # if player died...
                 time = pygame.time.get_ticks()
                 if died == False:
-                    self.txt.updateReaderMessage(self.p.name + ' died!')
                     time_died = time
                     died = True
                 if time - time_died < 1500:
@@ -111,31 +108,7 @@ class Game:
                 else:
                     self.sound.stopAll()
                     return 'DIED'
-
             
-            '''client_event = self.client.get()
-            
-            for e in pygame.event.get():
-                if e.type == KEYDOWN:
-                    if e.key == K_LEFT:
-                        self.client.sendMovement("left")
-                    if e.key == K_RIGHT:
-                        self.client.sendMovement("right")
-                    if e.key == K_DOWN:
-                        self.client.sendMovement("down")
-                    if e.key == K_UP:
-                        self.client.sendMovement("up")
-
-            for e in client_event['moves']:
-                if e == 'up':
-                    self.p.up()
-                if e == 'down':
-                    self.p.down()
-                if e == 'left':
-                    self.p.left()
-                if e == 'right':
-                    self.p.right()'''
-                
     def doEvent(self):
         
         # close game
@@ -151,8 +124,7 @@ class Game:
             if e.type == KEYDOWN and e.key == K_ESCAPE:
                 return 'ESCAPE'
             
-            # check click and get mouse position
-            self.clicked(e)
+            # get mouse position
             mouse_pos = pygame.mouse.get_pos()
 
             if (pygame.mouse.get_pressed()[2]):
@@ -162,55 +134,37 @@ class Game:
                 self.updateMovementPath(self.mouse_pos_right_click)
                 self.mouse_pos_right_click = None
             
-            # handle writer box
-            if self.txt.writing_now and self.arrow == [0, 0]:
-                message = self.txt.handleWriterBox(events)
-                if message != None:
-                    full_nome = unicode('[' + self.p.name + ']: ', 'utf8')
-                    full_message = full_nome + message
-                    self.txt.updateReaderMessage(full_message)
+            # handle character movement
+            if e.type == KEYUP:
+                
+                if (len(self.path_deque)):
+                    self.p.stopped
+                    self.path_deque.clear()
+                    
+                if e.key in self.arrow_states.keys():
+                    self.arrow_states[e.key][0] = False
+                    self.updateArrows()
+                
+                if e.key == K_LSHIFT:
+                    self.p.updateSpeed(False)
             
-            else:
+            elif e.type == KEYDOWN:
                 
-                # handle reader box
-                self.txt.handleReaderBox(e)
+                if (len(self.path_deque)):
+                    self.p.stopped
+                    self.path_deque.clear()
+                    
+                if e.key in self.arrow_states.keys():
+                    self.arrow_states[e.key][0] = True
+                    self.updateArrows()
                 
-                # handle character movement
-                if e.type == KEYUP:
-                    
-                    if (len(self.path_deque)):
-                        self.p.stopped
-                        self.path_deque.clear()
-                        
-                    if e.key in self.arrow_states.keys():
-                        self.arrow_states[e.key][0] = False
-                        self.updateArrows()
-                    
-                    if e.key == K_LSHIFT:
-                        self.p.updateSpeed(False)
+                if e.key in self.p.attack_keys.keys():
+                    self.p.attack(e.key)
                 
-                elif e.type == KEYDOWN:
-                    
-                    if (len(self.path_deque)):
-                        self.p.stopped
-                        self.path_deque.clear()
-                        
-                    if e.key in self.arrow_states.keys():
-                        self.arrow_states[e.key][0] = True
-                        self.updateArrows()
-                    
-                    if e.key in self.p.attack_keys.keys():
-                        self.p.attack(e.key)
-                    
-                    if e.key == K_LSHIFT:
-                        self.p.updateSpeed(True)
+                if e.key == K_LSHIFT:
+                    self.p.updateSpeed(True)
         
         return 'NEXT'
-    
-    def clicked(self, event):
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            self.txt.updateWriting()
-        return True
     
     def updateArrows(self):
         self.arrow = [0, 0]

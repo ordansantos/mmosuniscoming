@@ -140,15 +140,18 @@ class Main:
                 game = Game.Game(self.screen, width, height, path_image)
                 switch = game.run()
                 if switch == 'QUIT':
-                    return 'QUIT'
+                    pygame.quit()
+                    sys.exit()
             
             elif op == 1:
                 switch = Menu.about(width, height)
                 if switch[0] == 'QUIT':
-                    return 'QUIT'
+                    pygame.quit()
+                    sys.exit()
             
             elif op == 2:
-                return 'QUIT'
+                pygame.quit()
+                sys.exit()
 
 class Login:
     
@@ -349,7 +352,8 @@ class Login:
 def checkLogin(email, senha):
     
     try:
-        host = 'localhost'
+        
+        host = 'suniscoming.ddns.net'
         port = 8888
         size = 1024
         conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -364,6 +368,7 @@ def checkLogin(email, senha):
         data = conn.recv(size)
         
         return data
+    
     except Exception, e:
         print e
         return 'Servidor inativo'
@@ -375,6 +380,9 @@ if __name__ == '__main__':
     
     main = Main()
     login = Login()
+    
+    # update title based in Ana and Sthefano
+    pygame.display.set_caption('Sun is coming Client. Mantido por Ordan Santos e Eri Jonhson')
     
     while True:
         

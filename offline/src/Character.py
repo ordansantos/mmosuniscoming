@@ -374,13 +374,13 @@ class Player(Character):
 	
 	def updateDeath(self, period):
 		time = pygame.time.get_ticks()
-		"""if period == "morning" and self.life != 0 and not self.transformed:
+		if period == "morning" and self.life != 0 and not self.transformed:
 			if time - self.death >= self.death_interval:
-				self.life -= self.stranger
+				self.life -= 5
 				if self.life < 0:
 					self.life = 0
 					self.dying()
-				self.death = time"""
+				self.death = time
 		if self.fast and not self.transformed:
 			if time - self.death >= (self.death_interval / 5):
 				self.life -= 1

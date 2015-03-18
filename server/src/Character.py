@@ -223,22 +223,22 @@ class Player(Character):
 		
 		# death
 		self.death = pygame.time.get_ticks()
-		self.death_interval = 7000  # 7 seconds
+		self.death_interval = 10000  # 10 seconds
 	
 	def updateDeath(self, period):
 		time = pygame.time.get_ticks()
-		"""if period == "morning" and self.life != 0 and not self.transformed:
+		if period == 'm' and self.life != 0 and not self.transformed:
 			if time - self.death >= self.death_interval:
-				self.life -= self.stranger
+				self.life -= 5
 				if self.life < 0:
 					self.life = 0
-				self.death = time"""
-		if self.fast and not self.transformed:
+				self.death = time
+		"""if self.fast and not self.transformed:
 			if time - self.death >= (self.death_interval / 5):
 				self.life -= 1
 				if self.life < 0:
 					self.life = 0
-				self.death = time
+				self.death = time"""
 	
 	# movement handle
 	def move(self, arrow):
@@ -286,7 +286,6 @@ class Player(Character):
 	def updateTransform(self):
 		time = pygame.time.get_ticks()
 		if self.partial_killed == self.number_transformation:
-			self.sprites = self.transformed_sprites
 			self.last_transformation = time
 			self.partial_killed = 0
 			self.transformed = True
@@ -294,7 +293,6 @@ class Player(Character):
 		
 		if self.transformed:
 			if time - self.last_transformation >= self.transform_interval:
-				self.sprites = self.normal_sprites
 				self.last_transformation = time
 				self.transformed = False
 				return 'N'

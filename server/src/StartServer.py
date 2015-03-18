@@ -8,11 +8,11 @@ import Bot
 
 from pytmx.util_pygame import load_pygame
 
-#Iniciando os tiles do jogo
+# starting the game tiles
 tile_map = load_pygame('tile_map.tmx')
 Walls.Walls.pushWalls(tile_map) 
 
-#Criando bots
+# creating bots
 
 Bot.BotController.putNewBot ((912, 482), '../characters/sprites/black_man.png')
 
@@ -23,8 +23,7 @@ Bot.BotController.putNewBot ((975, 597), '../characters/sprites/blond_woman.png'
 Bot.BotController.putNewBot ((1029, 622), '../characters/sprites/brunette_woman.png')
 
 
-
-
 server = Server.Server()
 
 server.start()
+

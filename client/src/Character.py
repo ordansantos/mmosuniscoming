@@ -376,33 +376,8 @@ class Player(Character):
 		self.all_killed = 0
 		
 		# transformation control
-		self.partial_killed = 0
-		self.number_transformation = 2
-		self.transform_interval = 26000
-		self.last_transformation = 0L
 		self.transformed = False
 		
-		# death
-		self.death = pygame.time.get_ticks()
-		self.death_interval = 7000  # 7 seconds
-	
-	def updateDeath(self, period):
-		time = pygame.time.get_ticks()
-		"""if period == "morning" and self.life != 0 and not self.transformed:
-			if time - self.death >= self.death_interval:
-				self.life -= self.stranger
-				if self.life < 0:
-					self.life = 0
-					self.dying()
-				self.death = time"""
-		if self.fast and not self.transformed:
-			if time - self.death >= (self.death_interval / 5):
-				self.life -= 1
-				if self.life < 0:
-					self.life = 0
-					self.dying()
-				self.death = time
-	
 	# movement handle
 	def move(self, arrow):
 		if self.attack_key == Character.NO_ATTACK:
@@ -427,22 +402,16 @@ class Player(Character):
 	
 	# attack handle
 	def updateTransform(self):
-		time = pygame.time.get_ticks()
-		if self.partial_killed == self.number_transformation:
-			self.sprites = self.transformed_sprites
-			self.last_transformation = time
-			self.partial_killed = 0
-			self.transformed = True
-			return 'S'
-		
 		if self.transformed:
-			if time - self.last_transformation >= self.transform_interval:
-				self.sprites = self.normal_sprites
-				self.last_transformation = time
-				self.transformed = False
-				return 'N'
-		
+			self.sprites = self.transformed_sprites
+			return 'S'
+		elif False:
+			self.sprites = self.normal_sprites
+			return 'N'
 		return None
+
+	def setTransform(self, transformed):
+		self.transformed = transformed
 	
 	# life handle
 	def dead(self):

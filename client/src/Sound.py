@@ -52,6 +52,6 @@ class Sound:
     
     # all
     def stopAll(self):
-        self.transformed.stop()
+        # self.transformed.stop()
         self.normal_background.stop()
     

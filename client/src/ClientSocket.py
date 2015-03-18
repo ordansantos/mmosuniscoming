@@ -8,16 +8,19 @@ import threading
 import pygame
 import Queue
 import Main
+
 class ClientSocket:
     
-    def __init__(self, txt):
+    def __init__(self, txt, sun):
         
-        self.host = 'http://suniscoming.ddns.net'
+        self.host = 'suniscoming.ddns.net'
         self.port = 8888
         self.size = 1024
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect ((self.host, self.port))
         self.txt = txt
+        self.sun = sun
+        
         data = {"check": False, "email": Person.Person.email, "senha": Person.Person.senha, "image": Person.Person.image}
       
         data = json.dumps(data)
@@ -120,6 +123,7 @@ class ClientSocket:
         self.updateEvents (data['events'])
         self.updateBotsPositions(data['moves'])
         error = data['error']
+        self.sun.setGray(data['sun'])
    
         if (error):
             self.repairError()
@@ -171,7 +175,8 @@ class ClientSocket:
             if (event == 'm'):
                 message = e[1]
                 self.txt.updateReaderMessage(message)
-                
+        
+            
 class ClientConnection(threading.Thread):
     
     def run(self):

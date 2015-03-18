@@ -20,17 +20,17 @@ Projeto desenvolvido para a disciplina de Programação 1 do Curso de Ciência d
 Versão 1.0
 
 Desenvolvedores:
-Ordan Santos
-Eri Jonhson
+ - Ordan Santos
+ - Eri Jonhson
 
 Professores:
-Dalton Serey
-João Brunet
-Jorge Figueiredo
+ - Dalton Serey
+ - João Brunet
+ - Jorge Figueiredo
 
 Monitores:
-Andrey Menezes
-Kláudio Medeiros
+ - Andrey Menezes
+ - Kláudio Medeiros
 
 INSTRUÇÔES DE USO
 

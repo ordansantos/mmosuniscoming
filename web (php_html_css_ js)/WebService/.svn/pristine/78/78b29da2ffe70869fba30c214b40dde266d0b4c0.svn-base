@@ -1,0 +1,45 @@
+
+//'e' = estrutura de curso 
+
+	//'i' = integrado
+
+	ei_informatica 
+	ei_manutencao_suporte_informatica
+	ei_mineracao
+	ei_petroleo_gas
+
+	//'p' = proeja
+
+	ep_operacao_microcomputadores
+	ep_manutencao_suporte_informatica
+
+	//'sub' = subsequente
+	esub_manutencao_suporte_informatica
+	esub_mineracao
+	
+	//'sup' = superior
+	esup_construcao_edificios
+	esup_fisica
+	esup_letras_lingua_portuguesa
+	esup_matematica
+
+//'i' = infraestrutura
+	i_banheiros
+	i_biblioteca
+	i_cantina
+	i_laboratorios
+	i_praca_esportiva
+	i_salas
+
+//'c' = cordenacao
+	c_integrado
+	c_proeja
+	c_subsequente
+	c_superior
+
+//'caest' = Coordenação de apoio ao estudante
+	caest
+
+//'qacademico' = Q-Acadêmico
+	qacademico
+

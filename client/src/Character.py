@@ -117,7 +117,7 @@ class Character:
 	
 	def getImage(self):
 		#print self.name
-		self.doAMovement()
+		
 		
 		x, y = self.picnr
 		if self.movement or self.attack_key != Character.NO_ATTACK or self.life == 0:
@@ -176,9 +176,9 @@ class Character:
 	def doAMovement(self):
 		x, y = self.getPosition()
 		x1, y1 = self.getMove()
-		if (math.fabs(x1 - x) > 1 or math.fabs(y1 - y) > 1):
-			self.toPosition(x1, y1)
-			return
+		#if (math.fabs(x1 - x) > 1 or math.fabs(y1 - y) > 1):
+		#	self.toPosition(x1, y1)
+		#	return
 			
 		if (x1 > x):
 			if (y1 > y):

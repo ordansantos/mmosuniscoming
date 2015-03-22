@@ -92,7 +92,8 @@ class BotThread(threading.Thread):
                     id = self.p.getId()
                     life = self.p.life
                     image = self.p.image
-                    Client.Client.events.append(('c', (id, x, y, image)))
+                    name = self.p.name
+                    Client.Client.events.append(('c', (id, x, y, image, name)))
                     self.p.setEnemy(None)
                     return
     def moveBot(self):

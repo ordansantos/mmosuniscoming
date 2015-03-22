@@ -133,6 +133,7 @@ class ClientSocket:
         q = Queue.Queue()
         self.master.x = self.last_x
         self.master.y = self.last_y
+        self.master.stopped()
     
     def updateBotsPositions(self, moves):
         for m in moves:
@@ -153,6 +154,8 @@ class ClientSocket:
                 else:
                     self.last_x = x;
                     self.last_y = y
+                    
+                p.doAMovement()
                     
     def updateEvents (self, events):
         
